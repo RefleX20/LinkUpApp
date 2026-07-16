@@ -175,7 +175,7 @@ If you are located in the European Economic Area or United Kingdom, you have the
 - **Right to Object** — Object to processing of your data for direct marketing or legitimate interests
 - **Right to Withdraw Consent** — Where processing is based on consent, withdraw it at any time
 
-To exercise any of these rights, contact us at support@linkupapp.com. We will respond within 30 days.
+To exercise any of these rights, contact us at hello.linkupapp@gmail.com. We will respond within 30 days.
 
 Our legal basis for processing your data is:
 - **Contract** — Processing necessary to provide you with the App's services
@@ -191,13 +191,13 @@ If you are a California resident, you have the following rights under the Califo
 - **Right to Opt-Out of Sale or Sharing** — We do not sell personal information. We do share limited data with advertising partners; you may opt out via the ATT prompt or iOS Settings.
 - **Right to Non-Discrimination** — We will not discriminate against you for exercising your privacy rights
 
-To exercise your California privacy rights, contact us at support@linkupapp.com or use the in-app account deletion feature.
+To exercise your California privacy rights, contact us at hello.linkupapp@gmail.com or use the in-app account deletion feature.
 
 ---
 
 ## 8. Children's Privacy
 
-The App is not directed to children under the age of 13. We do not knowingly collect personal information from children under 13. If we become aware that we have inadvertently collected personal information from a child under 13, we will take steps to delete that information promptly. If you believe we have collected information from a child under 13, please contact us immediately at support@linkupapp.com.
+The App is not directed to children under the age of 13. We do not knowingly collect personal information from children under 13. If we become aware that we have inadvertently collected personal information from a child under 13, we will take steps to delete that information promptly. If you believe we have collected information from a child under 13, please contact us immediately at hello.linkupapp@gmail.com.
 
 ---
 
@@ -243,7 +243,7 @@ Your continued use of the App after changes to this Privacy Policy constitutes y
 If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:
 
 **LinkUp Support**
-Email: support@linkupapp.com
+Email: hello.linkupapp@gmail.com
 
 For GDPR-related inquiries, you may also lodge a complaint with your local data protection authority.
 

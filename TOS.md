@@ -222,7 +222,7 @@ You agree to indemnify, defend, and hold harmless LinkUp and its officers, direc
 These Terms shall be governed by and construed in accordance with the laws of the United States and the Commonwealth of Pennsylvania, without regard to its conflict of law provisions.
 
 ### 17.2 Informal Resolution
-Before filing any formal legal claim, you agree to attempt to resolve the dispute informally by contacting us at support@linkupapp.com. We will attempt to resolve the dispute within 30 days.
+Before filing any formal legal claim, you agree to attempt to resolve the dispute informally by contacting us at hello.linkupapp@gmail.com. We will attempt to resolve the dispute within 30 days.
 
 ### 17.3 Arbitration
 If informal resolution fails, any dispute arising from or relating to these Terms or the App shall be resolved through binding individual arbitration administered by the American Arbitration Association (AAA) under its Consumer Arbitration Rules, rather than in court, except for claims that qualify for small claims court.
@@ -259,7 +259,7 @@ These Terms, together with our Privacy Policy, constitute the entire agreement b
 If you have any questions about these Terms, please contact us at:
 
 **LinkUp Support**
-Email: camisgood222@gmail.com
+Email: hello.linkupapp@gmail.com
 
 ---
 
