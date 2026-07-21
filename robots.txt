@@ -1,0 +1,32 @@
+# linkupsoftware.com — crawler policy
+# We WELCOME search and AI crawlers. Nothing here is disallowed.
+# (robots.txt controls ACCESS only; what the app IS lives in the page's
+#  meta description + JSON-LD structured data in index.html.)
+
+User-agent: *
+Allow: /
+
+# Named AI/search agents listed explicitly so intent is unambiguous and a
+# future blanket rule doesn't accidentally exclude them.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://linkupsoftware.com/sitemap.xml
