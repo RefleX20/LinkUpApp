@@ -20,7 +20,7 @@ If you do not agree with this Privacy Policy, please do not use the App.
 ### 2.1 Information You Provide Directly
 
 - **Account Information** — Name, username, email address, and/or phone number when you register
-- **Profile Information** — Any updates you make to your profile (name, username, email)
+- **Profile Information** — Any updates you make to your profile (name, username)
 - **Group Content** — Group names, descriptions, join codes you create or participate in
 - **Event Content** — Event titles, dates, details, and locations you enter when creating or editing events
 - **Chat Messages** — Messages, reactions, replies, event tags, and polls you send in group chats
