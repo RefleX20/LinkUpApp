@@ -80,9 +80,10 @@ We reserve the right to suspend or terminate your account at any time, for any r
 Users may create groups and invite others to join via unique 6-character codes. Group administrators ("admins") have elevated permissions including the ability to:
 - Create and manage events
 - Approve or reject join requests for private groups
-- Remove members from the group
+- Remove or ban members from the group
 - Transfer group ownership
-- Freeze group activity
+
+Freezing or removing a group is a moderation action available only to LinkUp, not to group admins; see Section 5.4.
 
 ### 5.2 User-Generated Content
 You are solely responsible for all content you post, upload, transmit, or otherwise make available through the App ("User Content"), including group names, event details, chat messages, locations, and profile information.
@@ -99,6 +100,17 @@ You agree not to post User Content that:
 - Violates any applicable law or regulation
 
 We reserve the right, but are not obligated, to remove any User Content that we determine, in our sole discretion, violates these Terms.
+
+### 5.4 Objectionable Content, Reporting, and Enforcement
+There is no tolerance for objectionable content or abusive users on LinkUp. In addition to the rights reserved above, the following measures operate on the App:
+
+- **Automated filtering.** Group chat messages and direct messages are screened automatically before they are posted. A message containing a slur, hate speech, or a threat is refused at the point of sending and is never delivered. Group names and descriptions, event titles, details and locations, usernames, and display names are screened on the same basis when they are created or changed.
+- **Reporting.** You can report a message, direct message, event, group, or user from within the App. Reports are placed in a moderation queue that we review, and we act on reports of objectionable content and abusive users as promptly as we reasonably can.
+- **Blocking.** You can block another user from within the App. A blocked user cannot start or continue a direct message with you, and their messages are hidden from you in group chats you share.
+- **Enforcement.** Where a report or an automated flag is upheld, we may remove the content, temporarily restrict the user's ability to post, suspend or permanently ban the account, and freeze or remove the group involved. A group admin may also remove or ban a member from their own group, and may set a posting timeout that applies automatically when a member's message is blocked by the filter.
+- **Contact.** You can raise any content or conduct concern with us at hello.linkupapp@gmail.com. See Section 21.
+
+Registering for an account is your agreement to these Terms, including this Section. Posting objectionable content or abusing other users may result in the immediate and permanent termination of your account.
 
 ---
 
@@ -143,13 +155,13 @@ By creating an account and granting notification permissions, you consent to rec
 ## 10. Calendar and Device Permissions
 
 ### 10.1 Calendar Access
-If you grant calendar access, the App reads your personal calendar events solely to display them alongside group events on your device. Calendar data is never transmitted to our servers.
+If you grant calendar access, the App uses it on your device in three ways: to display your personal calendar events alongside group events in the Calendar tab; to warn you when an event you are responding to clashes with something already in your calendar; and, when you choose Add to Calendar on an event, to save that event into your calendar. The App requests **full** calendar access rather than a narrower permission because saving an event requires write access while clash detection and duplicate checking require read access. Calendar data is never transmitted to our servers. You can turn clash detection off in the App under **Profile → Privacy & Security → Calendar Integration**, and you can revoke calendar access entirely in **iOS Settings → Privacy & Security → Calendars → LinkUp**.
 
 ### 10.2 Camera Access
 Camera access is used exclusively to scan circular group codes. No images are stored or transmitted.
 
 ### 10.3 Location Access
-Location access is used solely to assist you in selecting event locations within the App. We do not track your location in the background or share precise location data with third parties.
+Location access is used to center the map on where you are when you are choosing a location for an event, and to show how far away an event is on its detail screen. A location you choose for an event becomes part of that event and is shared with the group the event belongs to. We do not track your location in the background, and the App does not request location while it is closed. Coordinates and addresses handled in the App — including your own position when you center the map on it — are sent to Apple's mapping and geocoding services in order to convert between the two; see Section 13. We do not sell location data and we do not send your device's location to our advertising partner. You can restrict the App to an approximate position by turning off **Precise Location** in **iOS Settings → Privacy & Security → Location Services → LinkUp**.
 
 ---
 
