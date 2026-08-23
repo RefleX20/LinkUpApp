@@ -40,6 +40,8 @@
   }
   </script>
 
+  <script>document.documentElement.classList.add('js');</script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -48,19 +50,15 @@
       --orange: #FFB300;
       --red: #D83A34;
       --gradient: linear-gradient(135deg, #FFB300 0%, #D83A34 100%);
-      --gradient-soft: linear-gradient(135deg, rgba(255,179,0,0.14) 0%, rgba(216,58,52,0.14) 100%);
       --black: #0a0a0a;
-      --card: #141414;
-      --card-2: #1a1a1a;
       --border: rgba(255,255,255,0.08);
-      --text: #f2f2f2;
-      --text-soft: rgba(255,255,255,0.68);
+      --text: #f4f4f5;
+      --text-soft: rgba(255,255,255,0.72);
       --text-muted: rgba(255,255,255,0.52);
-      --radius: 20px;
-      --maxw: 1140px;
+      --maxw: 1180px;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; overflow-x: clip; -webkit-text-size-adjust: 100%; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -68,7 +66,9 @@
       color: var(--text);
       line-height: 1.6;
       overflow-x: hidden;
+      overflow-x: clip;
       -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
     }
 
     a:focus-visible, button:focus-visible {
@@ -83,6 +83,9 @@
     }
     .skip-link:focus { left: 12px; }
 
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 32px; }
+    section[id] { scroll-margin-top: 84px; }
+
     /* ── NAV ── */
     nav {
       position: fixed;
@@ -91,93 +94,155 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 48px;
-      background: rgba(10,10,10,0.72);
-      backdrop-filter: blur(24px) saturate(160%);
-      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      padding: 18px 40px;
+      background: rgba(10,10,10,0.55);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
       border-bottom: 1px solid transparent;
       transition: border-color .25s, background .25s;
     }
     nav.scrolled { border-bottom-color: var(--border); background: rgba(10,10,10,0.9); }
-    .nav-logo { height: 26px; width: auto; filter: invert(1); display: block; }
-    .nav-links { display: flex; gap: 30px; align-items: center; }
+    .nav-logo { height: 24px; width: auto; filter: invert(1); display: block; }
+    .nav-links { display: flex; gap: 34px; align-items: center; }
     .nav-links a {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       font-weight: 500;
       transition: color 0.2s;
     }
     .nav-links a:hover { color: #fff; }
-    .nav-cta {
-      background: var(--gradient) !important;
-      color: #fff !important;
-      padding: 8px 18px;
-      border-radius: 50px;
-      font-size: 0.82rem !important;
-      font-weight: 700 !important;
+    .nav-links a.nav-cta { color: var(--orange); }
+    .nav-links a.nav-cta:hover { color: #ffcb51; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      border-radius: 100px;
+      padding: 13px 30px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform .15s, box-shadow .15s, background .2s, color .2s, border-color .2s;
     }
+    .btn-primary {
+      background: var(--gradient);
+      color: #fff;
+      box-shadow: 0 8px 28px rgba(216,58,52,0.30);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(216,58,52,0.42); }
+    .btn-ghost {
+      border: 1px solid rgba(255,255,255,0.22);
+      color: var(--text-soft);
+      padding: 12px 28px;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.45); color: #fff; }
+    .btn-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 34px; }
 
-    /* ── LAYOUT ── */
-    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
-
-    /* ── HERO ── */
-    .hero {
+    /* ── DEVICE (real iPhone 17 Pro frame; screenshot tucked under the bezel) ── */
+    .device {
       position: relative;
-      padding: 168px 0 96px;
-      overflow: hidden;
+      width: min(360px, 74vw);
+      flex: none;
+      z-index: 1;
+      filter: drop-shadow(0 34px 64px rgba(0,0,0,0.58)) drop-shadow(0 8px 18px rgba(0,0,0,0.4));
     }
-    .hero::before {
+    .device .frame {
+      position: relative;
+      z-index: 2;
+      display: block;
+      width: 100%; height: auto;
+      pointer-events: none;
+      user-select: none;
+    }
+    /* Screen hole measured off the frame PNG: left 5% / top 2.7% / 88.8% x 94.5%.
+       Slightly oversized so the shot tucks under the bezel with no seam; the frame's
+       opaque bezel masks the corners, so no border-radius is needed. */
+    .device .shot {
+      position: absolute;
+      z-index: 1;
+      left: 4.7%; top: 2.45%;
+      width: 89.4%; height: 95%;
+      object-fit: cover;
+      /* Match the body's ~80px corner curve (at 600px frame scale) so the
+         shot's corners never poke outside the rounded rim. */
+      border-radius: 15% / 6.9%;
+    }
+
+    .glow {
+      position: absolute;
+      left: 50%; top: 50%;
+      width: 150%; aspect-ratio: 1;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(255,179,0,0.15) 0%, rgba(216,58,52,0.08) 45%, transparent 68%);
+      filter: blur(34px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-media .glow, .row-media .glow { top: 60%; opacity: 0.75; }
+
+    /* Underglow — the phone sits on a pool of brand-colored light */
+    .hero-media::before, .row-media::before {
       content: '';
       position: absolute;
-      inset: 0;
-      background-image: url('bg.png');
-      background-size: 180px;
-      opacity: 0.03;
+      left: 50%; bottom: -7%;
+      width: min(560px, 96vw); height: 58%;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse 50% 62% at 50% 100%, rgba(255,140,40,0.5) 0%, rgba(216,58,52,0.24) 52%, transparent 78%);
+      filter: blur(38px);
       pointer-events: none;
+      z-index: 0;
     }
-    .hero-glow {
+    .hero-media::after, .row-media::after {
+      content: '';
       position: absolute;
-      top: -140px; left: 12%;
-      width: 720px; height: 620px;
-      background: radial-gradient(ellipse, rgba(255,179,0,0.15) 0%, rgba(216,58,52,0.10) 42%, transparent 70%);
+      left: 50%; bottom: -48px;
+      width: min(380px, 76vw); height: 84px;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255,180,80,0.72) 0%, rgba(216,58,52,0.4) 55%, transparent 82%);
+      filter: blur(22px);
       pointer-events: none;
-      border-radius: 50%;
-      filter: blur(50px);
+      z-index: 0;
     }
+
+    /* ── HERO ── */
+    .hero { position: relative; padding: 168px 0 100px; }
     .hero-grid {
-      position: relative;
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: minmax(0, 540px) minmax(0, 1fr);
+      gap: 48px;
       align-items: center;
-      text-align: center;
+    }
+    .hero-app {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 30px;
     }
     .hero-icon {
       display: block;
-      width: 104px; height: 104px;
-      border-radius: 24px;
-      margin: 0 auto 30px;
-      box-shadow: 0 24px 64px rgba(216,58,52,0.34), 0 8px 24px rgba(0,0,0,0.45);
+      width: 58px; height: 58px;
+      border-radius: 14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
     }
-
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--orange);
-      background: rgba(255,179,0,0.09);
-      border: 1px solid rgba(255,179,0,0.28);
-      padding: 7px 16px;
+      background: rgba(255,179,0,0.08);
+      border: 1px solid rgba(255,179,0,0.25);
+      padding: 6px 14px;
       border-radius: 50px;
-      margin-bottom: 26px;
     }
     .hero-badge::before {
       content: '';
-      width: 7px; height: 7px;
+      width: 6px; height: 6px;
       border-radius: 50%;
       background: var(--orange);
       animation: pulse 2s infinite;
@@ -189,11 +254,11 @@
     }
 
     .hero h1 {
-      font-size: clamp(2.7rem, 5.6vw, 4.6rem);
+      font-size: clamp(2.5rem, 4.6vw, 3.7rem);
       font-weight: 800;
-      letter-spacing: -0.042em;
-      line-height: 1.02;
-      margin-bottom: 22px;
+      letter-spacing: -0.035em;
+      line-height: 1.05;
+      margin-bottom: 20px;
     }
     .hero h1 .grad {
       background: var(--gradient);
@@ -201,258 +266,215 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .hero-sub {
-      font-size: clamp(1.02rem, 1.4vw, 1.16rem);
+    .hero p.hero-sub {
       color: var(--text-soft);
-      max-width: 480px;
-      margin-bottom: 34px;
+      font-size: 1.05rem;
+      max-width: 460px;
       line-height: 1.65;
     }
-    .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
 
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      background: var(--gradient);
-      color: #fff;
-      padding: 15px 30px;
-      border-radius: 50px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      text-decoration: none;
-      box-shadow: 0 6px 30px rgba(216,58,52,0.32);
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(216,58,52,0.46); }
-    .btn-ghost {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--text-soft);
-      padding: 15px 26px;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.14);
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .btn-ghost:hover { border-color: rgba(255,255,255,0.32); color: #fff; }
+    .hero-media { position: relative; display: flex; justify-content: center; align-items: center; }
+    .hero-media .device { width: min(370px, 74vw); }
 
     .hero-meta {
-      display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
-      font-size: 0.84rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+      font-size: 0.85rem; color: var(--text-muted); margin-top: 28px;
     }
-    .hero-meta i { font-style: normal; display: inline-flex; align-items: center; gap: 6px; }
-    .hero-meta svg { width: 14px; height: 14px; color: var(--orange); }
+    .hero-meta i { font-style: normal; display: inline-flex; align-items: center; gap: 7px; }
+    .hero-meta svg { width: 14px; height: 14px; color: var(--orange); flex: none; }
 
-    /* ── SECTIONS ── */
-    .section { padding: 96px 0; }
-    .section-head { max-width: 620px; margin-bottom: 52px; }
-    .section-label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      background: var(--gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 13px;
-      display: inline-block;
+    /* ── ALTERNATING FEATURE ROWS ── */
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      padding: 84px 0;
     }
-    .section-title {
-      font-size: clamp(2rem, 4.4vw, 2.9rem);
-      font-weight: 800;
-      letter-spacing: -0.032em;
-      line-height: 1.08;
+    .row-copy { max-width: 460px; justify-self: center; }
+    .row--flip .row-media { order: -1; }
+
+    .row-kick {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--orange);
       margin-bottom: 14px;
     }
-    .section-sub { font-size: 1rem; color: var(--text-muted); line-height: 1.7; }
-
-    /* ── FEATURES ── */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 16px;
-    }
-    .feature-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 30px;
-      transition: border-color 0.2s, transform 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-    .feature-card::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: var(--gradient-soft);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .feature-card:hover { transform: translateY(-3px); border-color: rgba(255,179,0,0.24); }
-    .feature-card:hover::before { opacity: 1; }
-    .feature-icon {
-      width: 46px; height: 46px;
-      border-radius: 13px;
-      background: rgba(255,179,0,0.09);
-      border: 1px solid rgba(255,179,0,0.22);
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 20px;
-      position: relative;
-      color: var(--orange);
-    }
-    .feature-icon svg { width: 22px; height: 22px; }
-    .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 9px; letter-spacing: -0.01em; position: relative; }
-    .feature-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; position: relative; }
-
-    /* ── STEPS ── */
-    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-    .step {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 30px;
-    }
-    .step-num {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 34px; height: 34px; border-radius: 50%;
+    .row-kick .num { color: rgba(255,255,255,0.32); font-variant-numeric: tabular-nums; }
+    .row-kick .tick {
+      width: 22px; height: 2px;
       background: var(--gradient);
-      color: #fff; font-weight: 800; font-size: 0.9rem;
-      margin-bottom: 18px;
+      border-radius: 1px;
+      flex: none;
     }
-    .step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-    .step p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; }
+    .row h3 {
+      font-size: clamp(1.5rem, 2.5vw, 1.9rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 14px;
+      color: #fff;
+    }
+    .row p { color: var(--text-soft); font-size: 1rem; line-height: 1.7; }
 
-    /* ── BETA CARD ── */
-    .coming { padding: 20px 0 100px; }
-    .coming-card {
-      position: relative;
-      border-radius: 28px;
-      padding: 60px 40px;
-      background: var(--card);
+    .row-media { position: relative; display: flex; justify-content: center; align-items: center; }
+    .row-media .device { width: min(320px, 68vw); }
+
+    /* ── PRIVACY BAND ── */
+    .band { padding: 92px 0; border-top: 1px solid var(--border); }
+    .band-kick {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.74rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 14px;
+    }
+    .band-kick .tick { width: 22px; height: 2px; background: var(--gradient); border-radius: 1px; flex: none; }
+    .band h3 {
+      font-size: clamp(1.5rem, 2.5vw, 1.9rem);
+      font-weight: 700; letter-spacing: -0.02em; margin-bottom: 14px; color: #fff;
+    }
+    .lede { color: var(--text-soft); max-width: 600px; margin-bottom: 46px; }
+    .band-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+    .band-item {
       border: 1px solid var(--border);
-      overflow: hidden;
-      text-align: center;
+      border-radius: 16px;
+      padding: 26px 26px 24px;
+      background: rgba(255,255,255,0.02);
     }
-    .coming-card::before {
-      content: '';
-      position: absolute;
-      top: -130px; left: 50%; transform: translateX(-50%);
-      width: 460px; height: 260px;
-      background: radial-gradient(ellipse, rgba(255,179,0,0.17) 0%, transparent 70%);
-      pointer-events: none;
+    .band-item h4 {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 10px;
     }
-    .coming-card h2 {
-      font-size: clamp(1.6rem, 3.6vw, 2.2rem);
-      font-weight: 800; letter-spacing: -0.025em;
-      margin-bottom: 12px; position: relative;
+    .band-item p { color: var(--text-muted); font-size: 0.92rem; line-height: 1.65; }
+
+    /* ── COMING SOON ── */
+    .coming { padding: 100px 0; border-top: 1px solid var(--border); text-align: center; position: relative; overflow: hidden; }
+    .coming .glow { width: 800px; top: 30%; }
+    .coming h3 {
+      font-size: clamp(1.7rem, 3vw, 2.3rem);
+      font-weight: 800; letter-spacing: -0.025em; margin-bottom: 14px; position: relative;
     }
-    .coming-card > p {
-      color: var(--text-soft);
-      max-width: 470px; margin: 0 auto 30px;
-      font-size: 0.98rem; position: relative;
-    }
+    .coming p { color: var(--text-soft); max-width: 480px; margin: 0 auto 34px; position: relative; }
     .store-pill {
       display: inline-flex; align-items: center; gap: 12px;
-      border: 1px solid rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.03);
       border-radius: 14px;
-      padding: 12px 22px;
+      padding: 12px 24px;
       color: var(--text-soft);
       user-select: none; position: relative;
     }
-    .store-pill svg { width: 26px; height: 26px; fill: currentColor; }
+    .store-pill svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
     .store-pill .store-text { text-align: left; line-height: 1.25; }
-    .store-pill .store-text small { display: block; font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.75; }
+    .store-pill .store-text small { display: block; font-size: 0.64rem; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.75; }
     .store-pill .store-text strong { font-size: 0.98rem; font-weight: 700; color: var(--text); }
 
     /* ── LEGAL ── */
-    .legal-section {
-      padding: 96px 0;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      align-items: center;
-    }
-    .legal-cards { display: flex; flex-direction: column; gap: 14px; }
-    .legal-card {
-      display: flex; align-items: center; justify-content: space-between;
-      background: var(--card);
+    .legal { padding: 88px 0; border-top: 1px solid var(--border); }
+    .legal h3 { font-size: clamp(1.4rem, 2.3vw, 1.7rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .legal .lede { color: var(--text-muted); font-size: 0.95rem; max-width: 560px; }
+    .legal-links { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 36px; }
+    .legal-link {
+      text-decoration: none;
+      display: block;
+      flex: 1 1 280px; max-width: 380px;
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 22px 26px;
-      text-decoration: none; color: #fff;
-      transition: border-color 0.2s, transform 0.15s, background 0.2s;
+      padding: 24px 26px;
+      background: rgba(255,255,255,0.02);
+      transition: border-color .2s, background .2s;
     }
-    .legal-card:hover { background: var(--card-2); border-color: rgba(255,179,0,0.3); transform: translateX(4px); }
-    .legal-card-left { display: flex; align-items: center; gap: 16px; }
-    .legal-card-icon {
-      width: 44px; height: 44px; border-radius: 11px;
-      background: rgba(255,179,0,0.09);
-      border: 1px solid rgba(255,179,0,0.22);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; color: var(--orange);
+    .legal-link:hover { border-color: rgba(255,179,0,0.35); background: rgba(255,179,0,0.04); }
+    .legal-link strong {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--orange); font-size: 1rem; font-weight: 700; margin-bottom: 6px;
+      transition: gap .2s;
     }
-    .legal-card-icon svg { width: 20px; height: 20px; }
-    .legal-card-text h3 { font-size: 0.97rem; font-weight: 700; margin-bottom: 3px; }
-    .legal-card-text p { font-size: 0.82rem; color: var(--text-muted); }
-    .legal-card-arrow { color: var(--orange); font-size: 1.1rem; opacity: 0.7; transition: opacity .2s, transform .2s; }
-    .legal-card:hover .legal-card-arrow { opacity: 1; transform: translateX(3px); }
+    .legal-link:hover strong { gap: 13px; }
+    .legal-link span { display: block; color: var(--text-muted); font-size: 0.88rem; }
 
     /* ── FOOTER ── */
-    footer { border-top: 1px solid var(--border); padding: 44px 0; }
-    .footer-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 20px;
-    }
-    footer img.footer-logo { height: 22px; filter: invert(1); opacity: 0.4; }
-    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
-    .footer-links a {
-      color: var(--text-muted); text-decoration: none;
-      font-size: 0.83rem; transition: color 0.2s;
-    }
-    .footer-links a:hover { color: rgba(255,255,255,0.9); }
-    .footer-copy { color: rgba(255,255,255,0.3); font-size: 0.8rem; }
+    footer { border-top: 1px solid var(--border); padding: 40px 0; }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+    footer img.footer-logo { height: 22px; filter: invert(1); opacity: 0.38; }
+    .footer-links { display: flex; gap: 26px; flex-wrap: wrap; }
+    .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .footer-links a:hover { color: rgba(255,255,255,0.92); }
+    .footer-copy { color: rgba(255,255,255,0.3); font-size: 0.82rem; }
 
-    /* ── SCROLL REVEAL ── */
-    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
-    .reveal.in { opacity: 1; transform: none; }
+    /* ── SCROLL REVEAL (gated on the js class so a no-JS load renders everything) ── */
+    .js .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s ease, transform .7s ease; }
+    .js .reveal.in { opacity: 1; transform: none; }
 
-    /* ── RESPONSIVE / MOTION ── */
+    /* ── MOTION / RESPONSIVE ── */
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
+      .reveal, .js .reveal { opacity: 1; transform: none; transition: none; }
       .hero-badge::before { animation: none; }
-      .reveal { opacity: 1; transform: none; transition: none; }
-      * { transition: none !important; }
+      * { transition: none !important; animation: none !important; }
     }
-    @media (max-width: 940px) {
-      .hero { padding: 140px 0 72px; }
-      .section-head { margin-left: auto; margin-right: auto; text-align: center; }
-      .legal-section { grid-template-columns: 1fr; gap: 32px; }
+
+    @media (max-width: 900px) {
+      .hero { padding: 132px 0 72px; text-align: center; }
+      .hero-grid { grid-template-columns: 1fr; gap: 56px; }
+      .hero-app, .btn-row, .hero-meta { justify-content: center; }
+      .hero p.hero-sub { margin-left: auto; margin-right: auto; }
+      .hero-media .device { width: min(300px, 68vw); }
+      .row { grid-template-columns: 1fr; gap: 44px; padding: 64px 0; text-align: center; }
+      .row--flip .row-media, .row-media { order: 0; }
+      .row-media .device { width: min(270px, 62vw); }
+      .row-copy { margin: 0 auto; }
+      .row-kick, .band-kick { justify-content: center; }
+      .band { text-align: center; }
+      .band .lede { margin-left: auto; margin-right: auto; }
+      .band-item { text-align: left; }
     }
-    @media (max-width: 768px) {
-      nav { padding: 12px 18px; }
-      .nav-links a:not(.nav-cta) { display: none; }
-      .section { padding: 72px 0; }
-      .coming-card { padding: 44px 22px; }
-      .footer-inner { flex-direction: column; align-items: flex-start; }
-      .hero-icon { width: 88px; height: 88px; }
+
+    @media (max-width: 700px) {
+      nav { padding: 14px 20px; }
+      .nav-links { gap: 15px; }
+      .nav-links a { font-size: 0.8rem; }
+      .nav-links a[href="#feed"] { display: none; }
+      .wrap { padding: 0 22px; }
+      .hero { padding: 118px 0 56px; }
+      .hero h1 { font-size: clamp(2.15rem, 9.5vw, 2.6rem); }
+      .hero p.hero-sub { font-size: 0.98rem; }
+      /* Icon + badge side by side leaves the badge no room at phone widths */
+      .hero-app { flex-direction: column; gap: 14px; margin-bottom: 24px; }
+      .btn-row { flex-direction: column; align-items: center; margin-top: 28px; gap: 12px; }
+      .btn { width: 100%; max-width: 320px; justify-content: center; }
+      .hero-meta { gap: 12px 18px; font-size: 0.82rem; margin-top: 24px; }
+      .hero-media .device { width: min(310px, 74vw); }
+      .row { padding: 56px 0; gap: 38px; }
+      .row h3 { font-size: 1.45rem; }
+      .row-media .device { width: min(290px, 70vw); }
+      .band, .coming, .legal { padding: 64px 0; }
+      .band-item { padding: 22px 20px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+
+    @media (max-width: 380px) {
+      .wrap { padding: 0 18px; }
+      .nav-links { gap: 11px; }
+      .nav-links a { font-size: 0.76rem; }
+      .hero-badge { font-size: 0.64rem; padding: 5px 12px; }
+      .hero h1 { font-size: 2rem; }
     }
   </style>
 </head>
 <body>
 
-<a class="skip-link" href="#features">Skip to content</a>
+<a class="skip-link" href="#feed">Skip to content</a>
 
 <!-- NAV -->
 <nav id="nav" aria-label="Main">
   <a href="/" aria-label="LinkUp home"><img class="nav-logo" src="logo.png" alt="LinkUp" /></a>
   <div class="nav-links">
-    <a href="#features">Features</a>
-    <a href="#how">How it works</a>
+    <a href="#feed">Features</a>
     <a href="privacy">Privacy</a>
     <a href="tos">Terms</a>
     <a href="#coming-soon" class="nav-cta">Coming Soon</a>
@@ -461,16 +483,17 @@
 
 <!-- HERO -->
 <header class="hero">
-  <div class="hero-glow" aria-hidden="true"></div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <p class="hero-badge">In development &mdash; coming soon to iOS</p>
-      <img class="hero-icon" src="appicon-320.png" alt="LinkUp app icon" width="104" height="104" />
-      <h1>Plan together.<br><span class="grad">Stay connected.</span></h1>
-      <p class="hero-sub">LinkUp keeps your group's events, RSVPs, and plans in one place — so nothing gets missed and everyone stays in the loop.</p>
-      <div class="hero-ctas">
-        <a class="btn-primary" href="#features">See what's coming</a>
-        <a class="btn-ghost" href="#how">How it works</a>
+      <div class="hero-app">
+        <img class="hero-icon" src="appicon-320.png" alt="LinkUp app icon" width="58" height="58" />
+        <p class="hero-badge">In development &mdash; coming soon to iOS</p>
+      </div>
+      <h1>Plan together.<br /><span class="grad">Stay connected.</span></h1>
+      <p class="hero-sub">Group plans die in the group chat. LinkUp gives your friends, club, team, or family a single place to post events, collect RSVPs, and keep everyone on the same page.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="#feed">See how it works</a>
+        <a class="btn btn-ghost" href="#coming-soon">Coming to iOS</a>
       </div>
       <p class="hero-meta">
         <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Free to use</i>
@@ -478,91 +501,102 @@
         <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>No personalized ads</i>
       </p>
     </div>
-
+    <div class="hero-media">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="device">
+        <img class="shot" decoding="async" src="shots/home-groups.png" width="1206" height="2622" alt="The LinkUp home screen showing a personal greeting and a list of the groups you belong to, each with member and upcoming-event counts." />
+        <img class="frame" decoding="async" src="iphone-frame.png" width="600" height="1224" alt="" aria-hidden="true" />
+      </div>
+    </div>
   </div>
 </header>
 
 <main>
 
-<!-- FEATURES -->
-<section class="section" id="features">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <p class="section-label">What LinkUp does</p>
-      <h2 class="section-title">Everything your group needs</h2>
-      <p class="section-sub">Everything it takes to plan, schedule, and run your group's events — in one app. No group-chat chaos. No missed plans.</p>
-    </div>
-
-    <div class="features-grid">
-      <div class="feature-card reveal">
-        <div class="feature-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-        </div>
-        <h3>Group Events</h3>
-        <p>Create events with dates, locations, and details — including repeating and multi-day events. RSVP Going, Maybe, or Can't Go, with capacity limits and RSVP deadlines.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.35 8.5 8.5 0 0 1-3.4-.7L3 21l1.85-5.6A8.38 8.38 0 0 1 21 11.5Z"/></svg>
-        </div>
-        <h3>Built-In Group Messaging</h3>
-        <p>Sort out the details without leaving the app — a thread per group with reactions, replies, polls for picking a date, and the ability to tag the event you're discussing.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>
-        </div>
-        <h3>Unified Calendar</h3>
-        <p>See group plans alongside your personal calendar so you never double-book. Your personal events stay on your device — they're never uploaded.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM18 18h3v3h-3z"/></svg>
-        </div>
-        <h3>Join in Seconds</h3>
-        <p>Join a group by scanning a QR code or typing a 6-character code. Private groups require admin approval before anyone gets in.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-        </div>
-        <h3>Notifications That Respect You</h3>
-        <p>New events, RSVPs, and reminders — with per-category controls and per-group muting, so you only hear about what you care about.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10Z"/></svg>
-        </div>
-        <h3>Private by Default</h3>
-        <p>Event locations are stored encrypted on our servers, sign-in credentials live in the iOS Keychain, ads are non-personalized, and your data is never sold.</p>
-      </div>
+<!-- ROW 1 — FEED -->
+<section class="row row--flip wrap" id="feed">
+  <div class="row-copy reveal">
+    <p class="row-kick"><span class="tick" aria-hidden="true"></span><span class="num">01</span> Events feed</p>
+    <h3>Every plan in one feed</h3>
+    <p>Your groups' events, grouped by day and counted down to the minute. Open LinkUp and you already know what's next — today, tomorrow, and the rest of the week — with your RSVP on every card.</p>
+  </div>
+  <div class="row-media reveal">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="device">
+      <img class="shot" decoding="async" loading="lazy" src="shots/events-feed.png" width="1206" height="2622" alt="The LinkUp events feed, listing upcoming events grouped under Today, Tomorrow, and later days, each showing its group, start time, and RSVP status." />
+      <img class="frame" decoding="async" loading="lazy" src="iphone-frame.png" width="600" height="1224" alt="" aria-hidden="true" />
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="section" id="how">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <p class="section-label">How it works</p>
-      <h2 class="section-title">Three steps to organized plans</h2>
-      <p class="section-sub">Built for friend groups, clubs, teams, and families — anyone who plans things together.</p>
+<!-- ROW 2 — RSVP -->
+<section class="row wrap" id="rsvp">
+  <div class="row-copy reveal">
+    <p class="row-kick"><span class="tick" aria-hidden="true"></span><span class="num">02</span> RSVPs</p>
+    <h3>One tap, and everyone knows</h3>
+    <p>Going, Maybe, or Can't Go. Answers update live for the whole group, with capacity limits, RSVP deadlines, and a Who's Going list — so nobody has to ask twice in the chat.</p>
+  </div>
+  <div class="row-media reveal">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="device">
+      <img class="shot" decoding="async" loading="lazy" src="shots/event-rsvp.png" width="1206" height="2622" alt="A LinkUp event detail screen showing the event name, a countdown, the location, event details, and a Who's Going breakdown of Going, Maybe, and Can't Go counts." />
+      <img class="frame" decoding="async" loading="lazy" src="iphone-frame.png" width="600" height="1224" alt="" aria-hidden="true" />
     </div>
-    <div class="steps">
-      <div class="step reveal">
-        <span class="step-num" aria-hidden="true">1</span>
-        <h3>Create or join a group</h3>
-        <p>Start a group and share its code, or join one by scanning a QR code. Everyone lands in the same space.</p>
+  </div>
+</section>
+
+<!-- ROW 3 — CHAT -->
+<section class="row row--flip wrap" id="chat">
+  <div class="row-copy reveal">
+    <p class="row-kick"><span class="tick" aria-hidden="true"></span><span class="num">03</span> Group messaging</p>
+    <h3>Sort the details in the group</h3>
+    <p>A message thread for every group, with reactions, replies, and polls for picking a date. Tag the event you're talking about and everyone knows exactly which plan you mean.</p>
+  </div>
+  <div class="row-media reveal">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="device">
+      <img class="shot" decoding="async" loading="lazy" src="shots/group-chat.png" width="1206" height="2622" alt="A LinkUp group chat thread with messages from several members and reply bubbles, alongside Events and Chat tabs." />
+      <img class="frame" decoding="async" loading="lazy" src="iphone-frame.png" width="600" height="1224" alt="" aria-hidden="true" />
+    </div>
+  </div>
+</section>
+
+<!-- ROW 4 — GROUPS -->
+<section class="row wrap" id="groups">
+  <div class="row-copy reveal">
+    <p class="row-kick"><span class="tick" aria-hidden="true"></span><span class="num">04</span> Groups</p>
+    <h3>A home for every group</h3>
+    <p>Scan a QR code or type a six-character code and you're in. Each group gets its own space — events, chat, members, and admin controls for whoever's running it. Private groups stay approval-only.</p>
+  </div>
+  <div class="row-media reveal">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="device">
+      <img class="shot" decoding="async" loading="lazy" src="shots/group-events.png" width="1206" height="2622" alt="A LinkUp group screen showing the group name, member count, a Create Event button, a QR share code, and the group's upcoming events with RSVP status." />
+      <img class="frame" decoding="async" loading="lazy" src="iphone-frame.png" width="600" height="1224" alt="" aria-hidden="true" />
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY BAND -->
+<section class="band" id="privacy-band">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="band-kick"><span class="tick" aria-hidden="true"></span>Privacy</p>
+      <h3>Private by default</h3>
+      <p class="lede">LinkUp is built so that the least possible amount of your data leaves your phone — and what does leave is protected on the way out.</p>
+    </div>
+    <div class="band-grid reveal">
+      <div class="band-item">
+        <h4>Your calendar stays yours</h4>
+        <p>Group plans sit alongside your personal calendar so you never double-book — but your personal events stay on your device and are never uploaded.</p>
       </div>
-      <div class="step reveal">
-        <span class="step-num" aria-hidden="true">2</span>
-        <h3>Post an event</h3>
-        <p>Pick a date, drop a pin or type an address, add the details. The whole group is notified instantly.</p>
+      <div class="band-item">
+        <h4>Encrypted locations</h4>
+        <p>Event locations are stored encrypted on our servers, and sign-in credentials live in the iOS Keychain rather than in app storage.</p>
       </div>
-      <div class="step reveal">
-        <span class="step-num" aria-hidden="true">3</span>
-        <h3>RSVP and chat</h3>
-        <p>Everyone responds with one tap, chats in the group thread, and gets reminders before it starts.</p>
+      <div class="band-item">
+        <h4>No personalized ads</h4>
+        <p>Ads are non-personalized, and your data is never sold. Notifications are per-category and per-group, so you only hear about what you care about.</p>
       </div>
     </div>
   </div>
@@ -570,53 +604,38 @@
 
 <!-- COMING SOON -->
 <section class="coming" id="coming-soon">
+  <div class="glow" aria-hidden="true"></div>
   <div class="wrap">
-    <div class="coming-card reveal">
-      <h2>LinkUp is in private beta</h2>
-      <p>We're polishing the final details with our beta testers. Launch on the App Store is around the corner.</p>
-      <div class="store-pill" aria-label="Coming soon to the App Store">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 12.54c-.03-2.89 2.36-4.27 2.47-4.34-1.35-1.97-3.44-2.24-4.18-2.27-1.78-.18-3.47 1.05-4.37 1.05-.9 0-2.29-1.02-3.77-1-1.94.03-3.72 1.13-4.72 2.86-2.01 3.49-.51 8.66 1.45 11.49.96 1.39 2.1 2.94 3.6 2.88 1.44-.06 1.99-.93 3.73-.93 1.74 0 2.23.93 3.76.9 1.56-.03 2.54-1.41 3.49-2.8 1.1-1.61 1.55-3.17 1.57-3.25-.03-.02-3.01-1.16-3.03-4.59ZM14.16 4.06c.8-.96 1.33-2.3 1.18-3.64-1.14.05-2.53.76-3.35 1.72-.74.85-1.38 2.21-1.21 3.52 1.28.1 2.58-.65 3.38-1.6Z"/></svg>
-        <span class="store-text">
-          <small>Coming soon to the</small>
-          <strong>App Store</strong>
-        </span>
-      </div>
-    </div>
+    <h3>LinkUp is in private beta</h3>
+    <p>We're polishing the last details with our beta testers. Launch on the App Store is around the corner.</p>
+    <span class="store-pill" aria-label="Coming soon to the App Store">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 12.54c-.03-2.89 2.36-4.27 2.47-4.34-1.35-1.97-3.44-2.24-4.18-2.27-1.78-.18-3.47 1.05-4.37 1.05-.9 0-2.29-1.02-3.77-1-1.94.03-3.72 1.13-4.72 2.86-2.01 3.49-.51 8.66 1.45 11.49.96 1.39 2.1 2.94 3.6 2.88 1.44-.06 1.99-.93 3.73-.93 1.74 0 2.23.93 3.76.9 1.56-.03 2.54-1.41 3.49-2.8 1.1-1.61 1.55-3.17 1.57-3.25-.03-.02-3.01-1.16-3.03-4.59ZM14.16 4.06c.8-.96 1.33-2.3 1.18-3.64-1.14.05-2.53.76-3.35 1.72-.74.85-1.38 2.21-1.21 3.52 1.28.1 2.58-.65 3.38-1.6Z"/></svg>
+      <span class="store-text">
+        <small>Coming soon to the</small>
+        <strong>App Store</strong>
+      </span>
+    </span>
   </div>
 </section>
 
 <!-- LEGAL -->
-<section class="wrap legal-section" id="legal">
-  <div class="legal-intro reveal">
-    <p class="section-label">Legal</p>
-    <h2 class="section-title">Transparent by design</h2>
-    <p class="section-sub">We believe you should know exactly how your data is handled. Our policies are written in plain language — no legal jargon, no surprises.</p>
-  </div>
-  <div class="legal-cards reveal">
-    <a class="legal-card" href="privacy">
-      <div class="legal-card-left">
-        <div class="legal-card-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-        </div>
-        <div class="legal-card-text">
-          <h3>Privacy Policy</h3>
-          <p>What we collect, how we use it, and your rights</p>
-        </div>
-      </div>
-      <span class="legal-card-arrow" aria-hidden="true">&rarr;</span>
-    </a>
-    <a class="legal-card" href="tos">
-      <div class="legal-card-left">
-        <div class="legal-card-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
-        </div>
-        <div class="legal-card-text">
-          <h3>Terms of Service</h3>
-          <p>Rules, responsibilities, and your agreement with us</p>
-        </div>
-      </div>
-      <span class="legal-card-arrow" aria-hidden="true">&rarr;</span>
-    </a>
+<section class="legal" id="legal">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="band-kick"><span class="tick" aria-hidden="true"></span>Legal</p>
+      <h3>Transparent by design</h3>
+      <p class="lede">You should know exactly how your data is handled. Our policies are written in plain language — no legal jargon, no surprises.</p>
+    </div>
+    <div class="legal-links reveal">
+      <a class="legal-link" href="privacy">
+        <strong>Privacy Policy <span aria-hidden="true">&rarr;</span></strong>
+        <span>What we collect, how we use it, and your rights.</span>
+      </a>
+      <a class="legal-link" href="tos">
+        <strong>Terms of Service <span aria-hidden="true">&rarr;</span></strong>
+        <span>Rules, responsibilities, and your agreement with us.</span>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -652,11 +671,8 @@
       entries.forEach(function (e) {
         if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
       });
-    }, { rootMargin: '0px 0px -60px 0px', threshold: 0.08 });
-    items.forEach(function (el, i) {
-      el.style.transitionDelay = Math.min(i % 3, 2) * 70 + 'ms';
-      io.observe(el);
-    });
+    }, { rootMargin: '0px 0px -70px 0px', threshold: 0.06 });
+    items.forEach(function (el) { io.observe(el); });
   }
 </script>
 
