@@ -1,0 +1,11 @@
+# app-ads.txt — authorized digital sellers for LinkUp (iOS)
+# IAB Tech Lab app-ads.txt v1.0
+#
+# AdMob finds this file via the DEVELOPER WEBSITE URL on the app's App Store
+# listing, so that listing must point at linkupsoftware.com or the file is
+# never crawled and verification stays pending forever.
+#
+# Publisher ID note: app-ads.txt uses the "pub-…" form, NOT the "ca-app-pub-…"
+# form used by the SDK's app ID. They are the same account, written differently.
+
+google.com, pub-1776602389493613, DIRECT, f08c47fec0942fa0
