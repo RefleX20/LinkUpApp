@@ -346,6 +346,19 @@
     .row-media { position: relative; display: flex; justify-content: center; align-items: center; }
     .row-media .device { width: min(320px, 68vw); }
 
+    /* Home-screen widgets: medium with the small overlapping its lower-right */
+    .widget-stack { position: relative; width: min(440px, 82vw); padding-bottom: 17%; z-index: 1; }
+    .widget-stack .w-med { display: block; width: 100%; height: auto; }
+    .widget-stack .w-sm { position: absolute; width: 44%; height: auto; right: -4%; bottom: 0; }
+    /* Dark widgets on a dark ground need lift: brighten slightly, stronger pool behind */
+    .widget-stack img { filter: brightness(1.16) drop-shadow(0 16px 36px rgba(0,0,0,0.55)); }
+    #widgets .row-media::before {
+      background: radial-gradient(ellipse 50% 62% at 50% 100%, rgba(255,150,50,0.5) 0%, rgba(216,58,52,0.28) 52%, transparent 78%);
+    }
+    #widgets .row-media::after {
+      background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255,180,80,0.8) 0%, rgba(216,58,52,0.45) 55%, transparent 82%);
+    }
+
     /* ── PRIVACY BAND ── */
     .band { padding: 92px 0; border-top: 1px solid var(--border); }
     .band-kick {
@@ -473,6 +486,8 @@
       .row { padding: 56px 0; gap: 38px; }
       .row h3 { font-size: 1.45rem; }
       .row-media .device { width: min(290px, 70vw); }
+      .widget-stack { width: min(360px, 86vw); }
+      .widget-stack .w-sm { right: 0; }
       .band, .coming, .legal { padding: 64px 0; }
       .band-item { padding: 22px 20px; }
       .footer-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
@@ -594,6 +609,22 @@
     <div class="device">
       <img class="shot" decoding="async" loading="lazy" src="shots/group-events.png" width="1206" height="2622" alt="A LinkUp group screen showing the group name, member count, a Create Event button, a QR share code, and the group's upcoming events with RSVP status." />
       <img class="frame" decoding="async" loading="lazy" src="iphone-frame.png" width="600" height="1224" alt="" aria-hidden="true" />
+    </div>
+  </div>
+</section>
+
+<!-- ROW 5 — WIDGETS -->
+<section class="row row--flip wrap" id="widgets">
+  <div class="row-copy reveal">
+    <p class="row-kick"><span class="tick" aria-hidden="true"></span><span class="num">05</span> Widgets</p>
+    <h3>Right on your home screen</h3>
+    <p>See what's next and RSVP without opening the app — the next event, its countdown, and your answer live on your home screen in small and medium sizes.</p>
+  </div>
+  <div class="row-media reveal">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="widget-stack">
+      <img class="w-med" decoding="async" loading="lazy" src="shots/widget-medium.png" width="711" height="382" alt="The medium LinkUp home-screen widget showing the next event with a countdown, its group, and one-tap Going, Maybe, and Can't Go RSVP buttons." />
+      <img class="w-sm" decoding="async" loading="lazy" src="shots/widget-small.png" width="324" height="322" alt="The small LinkUp home-screen widget showing the next event's countdown and your Going status." />
     </div>
   </div>
 </section>
