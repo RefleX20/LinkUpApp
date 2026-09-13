@@ -558,8 +558,10 @@
            stand-in rather than being shown raw. */
         var raw = String(err && err.message || '');
         var friendly = /^[A-Z].*[.!?]$/.test(raw) ? raw : 'We couldn\'t send that just now.';
+        /* No "try again in a moment" here — the relay's own sentence already
+           says what to do, and on a rate-limit reply it said the opposite. */
         showBad(
-          friendly + ' Please try again in a moment. If it keeps failing, reach us at ' +
+          friendly + ' If it keeps failing, reach us at ' +
           '<a href="mailto:' + SUPPORT_EMAIL + '">' + SUPPORT_EMAIL + '</a>.'
         );
       })
