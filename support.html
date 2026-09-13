@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support — LinkUp</title>
+  <meta name="description" content="Get help with LinkUp. Contact the support team about your account, a bug, a billing question, a privacy request, or anything else about the group event planning app for iOS." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="canonical" href="https://linkupsoftware.com/support" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="LinkUp" />
+  <meta property="og:title" content="Support — LinkUp" />
+  <meta property="og:description" content="Get help with LinkUp — account questions, bug reports, billing, and privacy requests." />
+  <meta property="og:url" content="https://linkupsoftware.com/support" />
+  <meta property="og:image" content="https://linkupsoftware.com/og.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="stylesheet" href="style.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "LinkUp Support",
+    "url": "https://linkupsoftware.com/support",
+    "about": { "@type": "MobileApplication", "name": "LinkUp", "operatingSystem": "iOS" }
+  }
+  </script>
+
+  <script>document.documentElement.classList.add('js');</script>
+
+  <style>
+    /* ── SUPPORT FORM ─────────────────────────────────────────────────────────
+       Additive to style.css. Every class here is new, so the legal pages that
+       share that stylesheet are untouched. */
+
+    .page-wrap.support { max-width: 720px; }
+
+    /* Intro cards above the form — the two questions people ask most often,
+       answered here so they never need to open a ticket for them. */
+    .quick-answers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 44px;
+    }
+    .quick-answer {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+    }
+    .quick-answer strong { display: block; font-size: 0.9rem; margin-bottom: 4px; color: #fff; }
+    .quick-answer span { font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; }
+
+    form.support-form { display: block; }
+
+    .field { margin-bottom: 22px; }
+    .field > label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.86);
+      margin-bottom: 7px;
+    }
+    .field .hint {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+    .req { color: var(--orange); margin-left: 2px; }
+
+    .field input[type="text"],
+    .field input[type="email"],
+    .field select,
+    .field textarea,
+    .hc-row input[type="text"] {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      transition: border-color .18s, background .18s, box-shadow .18s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .field textarea { min-height: 168px; resize: vertical; }
+
+    /* Native select needs its own chevron once appearance is stripped. */
+    .field select {
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff' opacity='.5'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 22px;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+    .field select option { background: #141414; color: var(--text); }
+
+    .field input:hover, .field select:hover, .field textarea:hover,
+    .hc-row input:hover { border-color: rgba(255,255,255,0.2); }
+    .field input:focus, .field select:focus, .field textarea:focus,
+    .hc-row input:focus {
+      outline: none;
+      border-color: var(--orange);
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 0 0 3px rgba(255,179,0,0.16);
+    }
+    .field input[aria-invalid="true"],
+    .field select[aria-invalid="true"],
+    .field textarea[aria-invalid="true"],
+    .hc-row input[aria-invalid="true"] {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(216,58,52,0.16);
+    }
+
+    .error-text {
+      display: none;
+      font-size: 0.8rem;
+      color: #ff8a84;
+      margin-top: 6px;
+    }
+    .error-text.show { display: block; }
+
+    .counter { float: right; font-size: 0.76rem; color: var(--text-muted); font-weight: 400; }
+    .counter.over { color: #ff8a84; }
+
+    /* Honeypot — off-screen rather than display:none, because some bots skip
+       fields that are explicitly hidden. Never announced, never focusable. */
+    .hp {
+      position: absolute !important;
+      left: -9999px !important;
+      width: 1px; height: 1px;
+      overflow: hidden;
+    }
+
+    /* ── Human check ── */
+    .human-check {
+      background: rgba(255,179,0,0.05);
+      border: 1px solid rgba(255,179,0,0.22);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+    }
+    .human-check .hc-head {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.86);
+      margin-bottom: 12px;
+    }
+    .human-check .hc-head svg { width: 17px; height: 17px; fill: var(--orange); flex: none; }
+    .hc-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .hc-question {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+    }
+    .hc-row input[type="text"] { width: 92px; flex: none; text-align: center; }
+    .hc-new {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      padding: 4px 2px;
+    }
+    .hc-new:hover { color: #fff; }
+
+    /* ── Submit ── */
+    .submit-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+    .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      background: var(--gradient);
+      color: #fff;
+      border: none;
+      border-radius: 100px;
+      padding: 14px 34px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(216,58,52,0.28);
+      transition: transform .15s, box-shadow .15s, opacity .15s;
+    }
+    .btn-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(216,58,52,0.4); }
+    .btn-submit:disabled { opacity: 0.55; cursor: default; transform: none; }
+    .submit-note { font-size: 0.8rem; color: var(--text-muted); }
+
+    .spinner {
+      width: 15px; height: 15px;
+      border: 2px solid rgba(255,255,255,0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+    .is-sending .spinner { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Result banners ── */
+    .result { border-radius: 14px; padding: 22px 24px; margin-bottom: 28px; display: none; }
+    .result.show { display: block; }
+    .result h2 { margin: 0 0 8px; font-size: 1.15rem; }
+    .result h2::before { display: none; }
+    .result p { margin-bottom: 0; }
+    .result.ok {
+      background: rgba(52,199,89,0.08);
+      border: 1px solid rgba(52,199,89,0.3);
+    }
+    .result.ok h2 { color: #5fd97f; }
+    .result.bad {
+      background: rgba(216,58,52,0.08);
+      border: 1px solid rgba(216,58,52,0.34);
+    }
+    .result.bad h2 { color: #ff8a84; }
+
+    .privacy-note {
+      margin-top: 34px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    @media (max-width: 600px) {
+      .quick-answers { margin-bottom: 34px; }
+      .btn-submit { width: 100%; }
+      .submit-row { gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<a class="skip-link" href="#support-form">Skip to the support form</a>
+
+<nav class="topnav">
+  <div class="topnav-left">
+    <a class="back" href="/">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      Back
+    </a>
+    <div class="nav-divider"></div>
+    <img class="nav-logo" src="logo.png" alt="LinkUp" />
+  </div>
+  <div class="topnav-right">Support</div>
+</nav>
+
+<main class="page-wrap support">
+
+  <div class="doc-header">
+    <span class="badge">We're here to help</span>
+    <h1>Support</h1>
+    <p class="meta" style="color:var(--text-soft);font-size:0.95rem;line-height:1.7;display:block;">
+      Tell us what's going on and we'll get back to you by email &mdash; usually within two business days.
+    </p>
+  </div>
+
+  <div class="quick-answers">
+    <div class="quick-answer">
+      <strong>Deleted your account by mistake?</strong>
+      <span>You have a 30&#8209;day window to get it back. Pick <em>Account help</em> below and write in from the email on the account.</span>
+    </div>
+    <div class="quick-answer">
+      <strong>Reporting a user or content?</strong>
+      <span>Fastest in the app &mdash; tap the &hellip; menu on the post or profile. Use the form if you can't reach it.</span>
+    </div>
+  </div>
+
+  <!-- Result banners (revealed by script; never shown on load) -->
+  <div class="result ok" id="result-ok" role="status" aria-live="polite">
+    <h2>Message sent</h2>
+    <p>Thanks &mdash; we've got it. A copy of your message is on its way to our support inbox and we'll reply to the email address you gave us. <a href="#" id="send-another">Send another message</a>.</p>
+  </div>
+
+  <div class="result bad" id="result-bad" role="alert">
+    <h2>That didn't go through</h2>
+    <p id="result-bad-text">Something went wrong on our end. Please try again in a moment, or email us directly at <a href="mailto:support@linkupsoftware.com">support@linkupsoftware.com</a>.</p>
+  </div>
+
+  <noscript>
+    <div class="result bad show" style="display:block;">
+      <h2>JavaScript is off</h2>
+      <p>This form needs JavaScript for its spam check. Email us directly at <a href="mailto:support@linkupsoftware.com">support@linkupsoftware.com</a> and include your name and what you need help with.</p>
+    </div>
+  </noscript>
+
+  <form class="support-form" id="support-form" novalidate>
+
+    <div class="field">
+      <label for="f-name">Your name <span class="req" aria-hidden="true">*</span></label>
+      <input type="text" id="f-name" name="name" autocomplete="name" maxlength="80" required
+             aria-required="true" aria-describedby="e-name" />
+      <span class="error-text" id="e-name">Please tell us your name.</span>
+    </div>
+
+    <div class="field">
+      <label for="f-email">Email address <span class="req" aria-hidden="true">*</span></label>
+      <input type="email" id="f-email" name="email" autocomplete="email" maxlength="160" required
+             inputmode="email" aria-required="true" aria-describedby="h-email e-email" />
+      <span class="hint" id="h-email">This is where our reply goes. If you're asking about your account, use the address it's registered to.</span>
+      <span class="error-text" id="e-email">Please enter a valid email address.</span>
+    </div>
+
+    <div class="field">
+      <label for="f-reason">What's this about? <span class="req" aria-hidden="true">*</span></label>
+      <select id="f-reason" name="reason" required aria-required="true" aria-describedby="e-reason">
+        <option value="" selected disabled>Choose a reason&hellip;</option>
+        <option>Account help (login, recovery, deletion)</option>
+        <option>Bug report</option>
+        <option>Billing or purchases</option>
+        <option>Privacy request (access or delete my data)</option>
+        <option>Report a user, group, or content</option>
+        <option>Appeal a suspension or ban</option>
+        <option>Feature request or feedback</option>
+        <option>Press or partnerships</option>
+        <option>Something else</option>
+      </select>
+      <span class="error-text" id="e-reason">Please pick a reason.</span>
+    </div>
+
+    <div class="field">
+      <label for="f-message">
+        How can we help? <span class="req" aria-hidden="true">*</span>
+        <span class="counter" id="counter" aria-hidden="true">0 / 4000</span>
+      </label>
+      <textarea id="f-message" name="message" maxlength="4000" required
+                aria-required="true" aria-describedby="h-message e-message"></textarea>
+      <span class="hint" id="h-message">The more detail the better. For a bug, tell us what you tapped, what you expected, and what happened instead.</span>
+      <span class="error-text" id="e-message">Please tell us what you need help with.</span>
+    </div>
+
+    <!-- Honeypot: a real person never sees or focuses this. Anything in it is a bot. -->
+    <div class="hp" aria-hidden="true">
+      <label for="f-company">Company (leave this blank)</label>
+      <input type="text" id="f-company" name="company" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="human-check">
+      <p class="hc-head">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+        Quick human check
+      </p>
+      <div class="hc-row">
+        <span class="hc-question" id="hc-question" aria-hidden="true">&nbsp;</span>
+        <label class="hp" for="f-human" id="hc-label">Answer the arithmetic question shown</label>
+        <input type="text" id="f-human" name="human" inputmode="numeric" autocomplete="off"
+               maxlength="4" required aria-required="true"
+               aria-labelledby="hc-label" aria-describedby="e-human" />
+        <button type="button" class="hc-new" id="hc-new">Try a different question</button>
+      </div>
+      <span class="error-text" id="e-human">That's not the right answer &mdash; give it another go.</span>
+    </div>
+
+    <div class="submit-row">
+      <button type="submit" class="btn-submit" id="submit-btn">
+        <span class="spinner" aria-hidden="true"></span>
+        <span id="submit-label">Send message</span>
+      </button>
+      <span class="submit-note">We reply to every message.</span>
+    </div>
+
+  </form>
+
+  <p class="privacy-note">
+    What you send here goes to our support inbox and is used only to answer you. We don't add you to a
+    mailing list, we don't use it for advertising, and we never sell it. See the
+    <a href="privacy">Privacy Policy</a> for the full picture.
+  </p>
+
+  <div class="doc-footer">
+    <img src="logo.png" alt="LinkUp" />
+    <p>&copy; 2026 LinkUp Software &middot; <a href="/">Home</a> &middot; <a href="privacy">Privacy</a> &middot; <a href="tos">Terms</a></p>
+  </div>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  /* The endpoint that relays this form to the support inbox.
+     Empty string = not deployed yet, in which case the form degrades to opening
+     the visitor's mail client with everything pre-filled, so the page is never
+     a dead end. Set this to the Worker URL to switch on real submission. */
+  var ENDPOINT = '';
+  var SUPPORT_EMAIL = 'support@linkupsoftware.com';
+
+  var form      = document.getElementById('support-form');
+  var btn       = document.getElementById('submit-btn');
+  var btnLabel  = document.getElementById('submit-label');
+  var okBox     = document.getElementById('result-ok');
+  var badBox    = document.getElementById('result-bad');
+  var badText   = document.getElementById('result-bad-text');
+  var counter   = document.getElementById('counter');
+  var message   = document.getElementById('f-message');
+  var hcQuestion= document.getElementById('hc-question');
+  var hcLabel   = document.getElementById('hc-label');
+  var hcInput   = document.getElementById('f-human');
+
+  /* When the page finished loading. A form completed in under a couple of
+     seconds was not filled in by a person. */
+  var loadedAt = Date.now();
+
+  /* ── Human check ───────────────────────────────────────────────────────────
+     Arithmetic rather than an image puzzle: it is readable by a screen reader,
+     needs no third-party script, and costs the visitor about a second. The
+     server re-checks it — this is a filter, not a lock. */
+  var hcA = 0, hcB = 0;
+  function newQuestion() {
+    hcA = 2 + Math.floor(Math.random() * 8);   /* 2–9 */
+    hcB = 2 + Math.floor(Math.random() * 8);   /* 2–9 */
+    hcQuestion.textContent = 'What is ' + hcA + ' + ' + hcB + '?';
+    hcLabel.textContent = 'What is ' + hcA + ' plus ' + hcB + '?';
+    hcInput.value = '';
+    setError(hcInput, 'e-human', false);
+  }
+  document.getElementById('hc-new').addEventListener('click', function () {
+    newQuestion();
+    hcInput.focus();
+  });
+  newQuestion();
+
+  /* ── Character counter ── */
+  function updateCounter() {
+    var n = message.value.length;
+    counter.textContent = n + ' / 4000';
+    counter.classList.toggle('over', n > 3800);
+  }
+  message.addEventListener('input', updateCounter);
+  updateCounter();
+
+  /* ── Validation ── */
+  function setError(el, errId, on) {
+    el.setAttribute('aria-invalid', on ? 'true' : 'false');
+    document.getElementById(errId).classList.toggle('show', on);
+  }
+
+  function validEmail(v) {
+    /* Deliberately permissive: catch the obvious typo, let the mail server be
+       the real judge. Over-strict patterns reject valid addresses. */
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  }
+
+  function validate() {
+    var ok = true;
+    var f = form.elements;
+
+    var nameOk = f.name.value.trim().length > 0;
+    setError(f.name, 'e-name', !nameOk); if (!nameOk) ok = false;
+
+    var emailOk = validEmail(f.email.value.trim());
+    setError(f.email, 'e-email', !emailOk); if (!emailOk) ok = false;
+
+    var reasonOk = !!f.reason.value;
+    setError(f.reason, 'e-reason', !reasonOk); if (!reasonOk) ok = false;
+
+    var msgOk = f.message.value.trim().length > 0;
+    setError(f.message, 'e-message', !msgOk); if (!msgOk) ok = false;
+
+    var humanOk = parseInt(f.human.value, 10) === hcA + hcB;
+    setError(f.human, 'e-human', !humanOk); if (!humanOk) ok = false;
+
+    return ok;
+  }
+
+  /* Clear a field's error as soon as the visitor starts fixing it. */
+  ['name', 'email', 'reason', 'message', 'human'].forEach(function (key) {
+    var el = form.elements[key];
+    var ev = el.tagName === 'SELECT' ? 'change' : 'input';
+    el.addEventListener(ev, function () { setError(el, 'e-' + key, false); });
+  });
+
+  /* ── Fallback: open the visitor's mail client, fully pre-filled ── */
+  function mailtoFallback(payload) {
+    var body =
+      'Name: '   + payload.name   + '\n' +
+      'Email: '  + payload.email  + '\n' +
+      'Reason: ' + payload.reason + '\n\n' +
+      payload.message + '\n';
+    return 'mailto:' + SUPPORT_EMAIL +
+           '?subject=' + encodeURIComponent('[' + payload.reason + '] ' + payload.name) +
+           '&body='    + encodeURIComponent(body);
+  }
+
+  function showBad(html) {
+    badText.innerHTML = html;
+    okBox.classList.remove('show');
+    badBox.classList.add('show');
+    badBox.scrollIntoView({ block: 'center' });
+  }
+
+  function setSending(on) {
+    btn.disabled = on;
+    form.classList.toggle('is-sending', on);
+    btnLabel.textContent = on ? 'Sending…' : 'Send message';
+  }
+
+  /* ── Submit ── */
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    badBox.classList.remove('show');
+
+    if (!validate()) {
+      var firstBad = form.querySelector('[aria-invalid="true"]');
+      if (firstBad) { firstBad.focus(); firstBad.scrollIntoView({ block: 'center' }); }
+      return;
+    }
+
+    var f = form.elements;
+    var payload = {
+      name:    f.name.value.trim(),
+      email:   f.email.value.trim(),
+      reason:  f.reason.value,
+      message: f.message.value.trim(),
+      company: f.company.value,          /* honeypot — must arrive empty */
+      a: hcA, b: hcB,
+      human:   parseInt(f.human.value, 10),
+      elapsed: Date.now() - loadedAt     /* ms on page — too fast means a bot */
+    };
+
+    /* No endpoint configured yet: hand off to the mail client instead of
+       failing. Everything the form collected travels with it. */
+    if (!ENDPOINT) {
+      window.location.href = mailtoFallback(payload);
+      setTimeout(function () {
+        okBox.querySelector('p').innerHTML =
+          'Your email app should have opened with the message ready to send &mdash; ' +
+          'press send there and it\'s on its way. If nothing opened, email us at ' +
+          '<a href="mailto:' + SUPPORT_EMAIL + '">' + SUPPORT_EMAIL + '</a>.';
+        okBox.classList.add('show');
+        okBox.scrollIntoView({ block: 'center' });
+      }, 400);
+      return;
+    }
+
+    setSending(true);
+
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(function (res) {
+        if (res.ok) return res.json().catch(function () { return {}; });
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          throw new Error(data.error || ('HTTP ' + res.status));
+        });
+      })
+      .then(function () {
+        form.style.display = 'none';
+        badBox.classList.remove('show');
+        okBox.classList.add('show');
+        okBox.scrollIntoView({ block: 'center' });
+      })
+      .catch(function (err) {
+        /* The relay answers with a sentence meant for the visitor. Anything
+           else (a dropped connection, an HTTP code) gets a generic stand-in
+           rather than being shown raw. */
+        var raw = String(err && err.message || '');
+        var friendly = /^[A-Z].*[.!?]$/.test(raw) ? raw : 'We couldn\'t send that just now.';
+        showBad(
+          friendly + ' Try again in a moment, or <a href="' + mailtoFallback(payload) + '">' +
+          'send it by email instead</a> &mdash; that link carries everything you just typed.'
+        );
+      })
+      .then(function () { setSending(false); });
+  });
+
+  /* "Send another message" resets the form rather than reloading the page. */
+  document.getElementById('send-another').addEventListener('click', function (e) {
+    e.preventDefault();
+    form.reset();
+    form.style.display = '';
+    okBox.classList.remove('show');
+    newQuestion();
+    updateCounter();
+    loadedAt = Date.now();
+    form.elements.name.focus();
+    form.scrollIntoView({ block: 'start' });
+  });
+})();
+</script>
+
+</body>
+</html>
