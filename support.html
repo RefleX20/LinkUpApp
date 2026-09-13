@@ -29,19 +29,10 @@
 
   <script>document.documentElement.classList.add('js');</script>
 
-  <!-- Google reCAPTCHA v2. The only third-party request this site makes, and it
-       is confined to this page — the homepage and legal pages stay at zero.
-       Rendered EXPLICITLY: the implicit `g-recaptcha` class silently does nothing
-       when the script is served but cannot initialise, which leaves an empty box
-       and no way to tell the visitor why. This callback is the hook that notices. -->
-  <script>
-    window.onRecaptchaReady = function () {
-      /* The page script defines this once it has the container; if the API wins
-         the race, park the call until then. */
-      if (window.__mountCaptcha) window.__mountCaptcha();
-      else window.__captchaReady = true;
-    };
-  </script>
+  <!-- Google reCAPTCHA v3. Invisible and score-based: there is nothing to click,
+       so the token is fetched at SUBMIT time rather than on load — a v3 token is
+       only valid for about two minutes, and one minted at page load would be
+       stale by the time anyone finished typing. -->
 
   <style>
     /* ── SUPPORT FORM ─────────────────────────────────────────────────────────
@@ -155,35 +146,23 @@
       overflow: hidden;
     }
 
-    /* ── Human check ── */
-    .human-check {
-      background: rgba(255,179,0,0.05);
-      border: 1px solid rgba(255,179,0,0.22);
-      border-radius: 14px;
-      padding: 16px 18px;
-      margin-bottom: 24px;
-    }
-    .human-check .hc-head {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.86);
-      margin-bottom: 12px;
-    }
-    .human-check .hc-head svg { width: 17px; height: 17px; fill: var(--orange); flex: none; }
-    /* The widget is a fixed-width iframe; let it shrink rather than overflow on
-       a narrow phone. */
-    .human-check #captcha { max-width: 100%; overflow: hidden; }
-    .human-check #captcha iframe { max-width: 100%; }
+    /* Google's floating badge is hidden, which their terms allow as long as the
+       attribution below the button is shown instead. */
+    .grecaptcha-badge { visibility: hidden; }
     .hc-blocked {
       font-size: 0.82rem;
       color: #ffc46b;
       line-height: 1.6;
-      margin: 10px 0 0;
+      margin: 0 0 18px;
     }
     .hc-blocked code { font-size: 0.95em; }
+    .recaptcha-note {
+      font-size: 0.76rem;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.6;
+      margin-top: 14px;
+    }
+    .recaptcha-note a { color: rgba(255,255,255,0.55); font-weight: 400; }
 
     /* ── Submit ── */
     .submit-row {
@@ -364,19 +343,12 @@
       <input type="text" id="f-company" name="company" tabindex="-1" autocomplete="off" />
     </div>
 
-    <div class="human-check">
-      <p class="hc-head">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-        Quick human check
-      </p>
-      <div id="captcha" data-sitekey="6LfQobgtAAAAAImxUSmt7VOD0C30VAVMD4ZIRMgs"></div>
-      <p class="hc-blocked" id="hc-blocked" hidden>
-        The check couldn't load &mdash; a privacy extension or content blocker is usually the
-        cause. Allow <code>google.com/recaptcha</code> and reload, or email us at
-        <a href="mailto:support@linkupsoftware.com">support@linkupsoftware.com</a>.
-      </p>
-      <span class="error-text" id="e-human">Please complete the check above.</span>
-    </div>
+    <p class="hc-blocked" id="hc-blocked" hidden>
+      The spam check couldn't load &mdash; a privacy extension or content blocker is usually
+      the cause. Allow <code>google.com/recaptcha</code> and reload, or email us at
+      <a href="mailto:support@linkupsoftware.com">support@linkupsoftware.com</a>.
+    </p>
+    <span class="error-text" id="e-human">The spam check didn't pass. Please reload and try again.</span>
 
     <div class="submit-row">
       <button type="submit" class="btn-submit" id="submit-btn">
@@ -385,6 +357,12 @@
       </button>
       <span class="submit-note">We reply to every message.</span>
     </div>
+
+    <p class="recaptcha-note">
+      This site is protected by reCAPTCHA and the Google
+      <a href="https://policies.google.com/privacy" rel="noopener">Privacy Policy</a> and
+      <a href="https://policies.google.com/terms" rel="noopener">Terms of Service</a> apply.
+    </p>
 
   </form>
 
@@ -417,62 +395,46 @@
   var badText   = document.getElementById('result-bad-text');
   var counter   = document.getElementById('counter');
   var message   = document.getElementById('f-message');
-  var blockedMsg= document.getElementById('hc-blocked');
+  var blockedMsg = document.getElementById('hc-blocked');
 
   /* When the page finished loading. A form completed in under a couple of
      seconds was not filled in by a person. */
   var loadedAt = Date.now();
 
-  /* ── reCAPTCHA ─────────────────────────────────────────────────────────────
-     The token is read from the widget with `grecaptcha.getResponse`. It is
-     SINGLE USE and expires after about two minutes, so every failed submit has
-     to reset the widget — otherwise the retry posts a token Google has already
-     spent and the visitor is stuck in a loop they cannot see the cause of. */
-  var widgetId = null;
+  /* ── reCAPTCHA v3 ──────────────────────────────────────────────────────────
+     Nothing to interact with: Google scores the session and hands back a token
+     on demand. Fetched at SUBMIT time because a v3 token lasts about two
+     minutes — one minted at page load would be stale before most people finish
+     typing, and the visitor would get a rejection they cannot act on. */
+  var SITE_KEY = '6LfQobgtAAAAAImxUSmt7VOD0C30VAVMD4ZIRMgs';
+  var RECAPTCHA_ACTION = 'support_form';
 
-  window.__mountCaptcha = function () {
-    if (widgetId !== null) return;                          /* already mounted */
-    if (!window.grecaptcha || !window.grecaptcha.render) {  /* served but inert */
-      blockedMsg.hidden = false;
-      return;
-    }
-    var box = document.getElementById('captcha');
-    try {
-      blockedMsg.hidden = true;   /* a slow load may have tripped the timeout */
-      widgetId = window.grecaptcha.render(box, {
-        sitekey: box.dataset.sitekey,
-        theme: 'dark',
-        callback: function () { setError(null, 'e-human', false); },
-        'expired-callback': function () { setError(null, 'e-human', true); },
-        'error-callback': function () { blockedMsg.hidden = false; }
-      });
-    } catch (e) {
-      /* Wrong key type (a v3 key cannot draw a checkbox) or a bad key lands
-         here. Without this the box is simply empty and nobody knows why. */
-      console.error('reCAPTCHA could not render:', e);
-      blockedMsg.hidden = false;
-    }
-  };
-  if (window.__captchaReady) window.__mountCaptcha();
-
-  function captchaToken() {
-    if (widgetId === null || !window.grecaptcha) return '';
-    try { return window.grecaptcha.getResponse(widgetId) || ''; } catch (e) { return ''; }
-  }
-  function resetCaptcha() {
-    if (widgetId !== null && window.grecaptcha) {
-      try { window.grecaptcha.reset(widgetId); } catch (e) {}
-    }
+  function captchaReady() {
+    return !!(window.grecaptcha && window.grecaptcha.execute);
   }
 
-  /* Nothing mounted after fifteen seconds means the script was blocked, or
-     loaded without initialising. Either way the visitor is stuck, so say so.
-     Generous on purpose: Google's script is heavy and a slow connection was
-     tripping a six-second timer while the widget was still on its way, which
-     put a "couldn't load" warning above a perfectly working checkbox. A late
-     mount clears the notice regardless. */
+  /* Resolves to a token, or to '' if reCAPTCHA is unavailable — the caller
+     turns that into a visible message rather than a silent failure. */
+  function getCaptchaToken() {
+    if (!captchaReady()) return Promise.resolve('');
+    return new Promise(function (resolve) {
+      try {
+        window.grecaptcha.ready(function () {
+          window.grecaptcha.execute(SITE_KEY, { action: RECAPTCHA_ACTION })
+            .then(function (t) { resolve(t || ''); })
+            .catch(function (e) { console.error('reCAPTCHA execute failed:', e); resolve(''); });
+        });
+      } catch (e) {
+        console.error('reCAPTCHA is not usable:', e);
+        resolve('');
+      }
+    });
+  }
+
+  /* A blocker stops the script outright, in which case nothing above will ever
+     work. Say so up front rather than at the moment they press Send. */
   setTimeout(function () {
-    if (widgetId === null) blockedMsg.hidden = false;
+    if (!captchaReady()) blockedMsg.hidden = false;
   }, 15000);
 
   /* ── Character counter ── */
@@ -512,9 +474,6 @@
     var msgOk = f.message.value.trim().length > 0;
     setError(f.message, 'e-message', !msgOk); if (!msgOk) ok = false;
 
-    var humanOk = captchaToken() !== '';
-    setError(null, 'e-human', !humanOk); if (!humanOk) ok = false;
-
     return ok;
   }
 
@@ -550,17 +509,31 @@
     }
 
     var f = form.elements;
+    setSending(true);
+
+    getCaptchaToken().then(function (token) {
+      if (!token) {
+        setSending(false);
+        blockedMsg.hidden = false;
+        setError(null, 'e-human', true);
+        blockedMsg.scrollIntoView({ block: 'center' });
+        return;
+      }
+      send(token);
+    });
+  });
+
+  function send(token) {
+    var f = form.elements;
     var payload = {
       name:     f.name.value.trim(),
       email:    f.email.value.trim(),
       reason:   f.reason.value,
       message:  f.message.value.trim(),
       company:  f.company.value,         /* honeypot — must arrive empty */
-      token:    captchaToken(),          /* reCAPTCHA, verified server-side */
+      token:    token,                   /* reCAPTCHA v3, verified server-side */
       elapsed:  Date.now() - loadedAt    /* ms on page — too fast means a bot */
     };
-
-    setSending(true);
 
     fetch(ENDPOINT, {
       method: 'POST',
@@ -580,9 +553,6 @@
         okBox.scrollIntoView({ block: 'center' });
       })
       .catch(function (err) {
-        /* The token is spent either way, so the widget has to be re-armed
-           before the visitor can try again. */
-        resetCaptcha();
         /* The relay answers with a sentence meant for the visitor. Anything
            else (a dropped connection, a bare HTTP code) gets a generic
            stand-in rather than being shown raw. */
@@ -594,7 +564,7 @@
         );
       })
       .then(function () { setSending(false); });
-  });
+  }
 
   /* "Send another message" resets the form rather than reloading the page. */
   document.getElementById('send-another').addEventListener('click', function (e) {
@@ -602,7 +572,6 @@
     form.reset();
     form.style.display = '';
     okBox.classList.remove('show');
-    resetCaptcha();
     updateCounter();
     loadedAt = Date.now();
     form.elements.name.focus();
@@ -611,7 +580,7 @@
 })();
 </script>
 
-<script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaReady&render=explicit"
+<script src="https://www.google.com/recaptcha/api.js?render=6LfQobgtAAAAAImxUSmt7VOD0C30VAVMD4ZIRMgs"
         async defer></script>
 
 </body>
