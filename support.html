@@ -337,10 +337,13 @@
       <span class="error-text" id="e-message">Please tell us what you need help with.</span>
     </div>
 
-    <!-- Honeypot: a real person never sees or focuses this. Anything in it is a bot. -->
+    <!-- Honeypot: a real person never sees or focuses this. Anything in it is a bot.
+         ⚠️ NOT named `company` or `organization` — those match browser and
+         password-manager autofill profiles, which would fill it in for a real
+         visitor and get them silently rejected as a bot. -->
     <div class="hp" aria-hidden="true">
-      <label for="f-company">Company (leave this blank)</label>
-      <input type="text" id="f-company" name="company" tabindex="-1" autocomplete="off" />
+      <label for="f-hp-ref">Leave this field blank</label>
+      <input type="text" id="f-hp-ref" name="hp_ref" tabindex="-1" autocomplete="off" />
     </div>
 
     <p class="hc-blocked" id="hc-blocked" hidden>
@@ -453,9 +456,10 @@
   }
 
   function validEmail(v) {
-    /* Deliberately permissive: catch the obvious typo, let the mail server be
-       the real judge. Over-strict patterns reject valid addresses. */
-    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+    /* Catches the obvious typo and nothing more — the mail server is the real
+       judge. The excluded set matches the relay's: the characters that carry
+       meaning in an address list, so a value here can never reshape a header. */
+    return /^[^\s@<>",;:()\[\]\\]+@[^\s@<>",;:()\[\]\\]+\.[^\s@<>",;:()\[\]\\]{2,}$/.test(v);
   }
 
   function validate() {
@@ -483,6 +487,16 @@
     var ev = el.tagName === 'SELECT' ? 'change' : 'input';
     el.addEventListener(ev, function () { setError(el, 'e-' + key, false); });
   });
+
+  /* `escape` because the sentence comes from the relay — a different origin.
+     Its replies are hardcoded today, so nothing is exploitable now, but piping
+     a remote string into innerHTML is one compromise away from script running
+     on this page. The contact link is built here instead of arriving as markup. */
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
 
   function showBad(html) {
     badText.innerHTML = html;
@@ -530,7 +544,7 @@
       email:    f.email.value.trim(),
       reason:   f.reason.value,
       message:  f.message.value.trim(),
-      company:  f.company.value,         /* honeypot — must arrive empty */
+      hp_ref:   f.hp_ref.value,          /* honeypot — must arrive empty */
       token:    token,                   /* reCAPTCHA v3, verified server-side */
       elapsed:  Date.now() - loadedAt    /* ms on page — too fast means a bot */
     };
@@ -557,7 +571,7 @@
            else (a dropped connection, a bare HTTP code) gets a generic
            stand-in rather than being shown raw. */
         var raw = String(err && err.message || '');
-        var friendly = /^[A-Z].*[.!?]$/.test(raw) ? raw : 'We couldn\'t send that just now.';
+        var friendly = esc(/^[A-Z].*[.!?]$/.test(raw) ? raw : 'We couldn\'t send that just now.');
         /* No "try again in a moment" here — the relay's own sentence already
            says what to do, and on a rate-limit reply it said the opposite. */
         showBad(
