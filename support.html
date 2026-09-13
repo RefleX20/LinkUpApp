@@ -29,6 +29,20 @@
 
   <script>document.documentElement.classList.add('js');</script>
 
+  <!-- Google reCAPTCHA v2. The only third-party request this site makes, and it
+       is confined to this page — the homepage and legal pages stay at zero.
+       Rendered EXPLICITLY: the implicit `g-recaptcha` class silently does nothing
+       when the script is served but cannot initialise, which leaves an empty box
+       and no way to tell the visitor why. This callback is the hook that notices. -->
+  <script>
+    window.onRecaptchaReady = function () {
+      /* The page script defines this once it has the container; if the API wins
+         the race, park the call until then. */
+      if (window.__mountCaptcha) window.__mountCaptcha();
+      else window.__captchaReady = true;
+    };
+  </script>
+
   <style>
     /* ── SUPPORT FORM ─────────────────────────────────────────────────────────
        Additive to style.css. Every class here is new, so the legal pages that
@@ -159,26 +173,17 @@
       margin-bottom: 12px;
     }
     .human-check .hc-head svg { width: 17px; height: 17px; fill: var(--orange); flex: none; }
-    .hc-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .hc-question {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #fff;
-      font-variant-numeric: tabular-nums;
+    /* The widget is a fixed-width iframe; let it shrink rather than overflow on
+       a narrow phone. */
+    .human-check #captcha { max-width: 100%; overflow: hidden; }
+    .human-check #captcha iframe { max-width: 100%; }
+    .hc-blocked {
+      font-size: 0.82rem;
+      color: #ffc46b;
+      line-height: 1.6;
+      margin: 10px 0 0;
     }
-    .hc-row input[type="text"] { width: 92px; flex: none; text-align: center; }
-    .hc-new {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-family: inherit;
-      font-size: 0.8rem;
-      cursor: pointer;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      padding: 4px 2px;
-    }
-    .hc-new:hover { color: #fff; }
+    .hc-blocked code { font-size: 0.95em; }
 
     /* ── Submit ── */
     .submit-row {
@@ -304,7 +309,7 @@
   <noscript>
     <div class="result bad show" style="display:block;">
       <h2>JavaScript is off</h2>
-      <p>This form needs JavaScript for its spam check. Email us directly at <a href="mailto:support@linkupsoftware.com">support@linkupsoftware.com</a> and include your name and what you need help with.</p>
+      <p>This form needs JavaScript to run its spam check. Turn it on and reload, or email us directly at <a href="mailto:support@linkupsoftware.com">support@linkupsoftware.com</a> with your name and what you need help with.</p>
     </div>
   </noscript>
 
@@ -364,15 +369,13 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
         Quick human check
       </p>
-      <div class="hc-row">
-        <span class="hc-question" id="hc-question" aria-hidden="true">&nbsp;</span>
-        <label class="hp" for="f-human" id="hc-label">Answer the arithmetic question shown</label>
-        <input type="text" id="f-human" name="human" inputmode="numeric" autocomplete="off"
-               maxlength="4" required aria-required="true"
-               aria-labelledby="hc-label" aria-describedby="e-human" />
-        <button type="button" class="hc-new" id="hc-new">Try a different question</button>
-      </div>
-      <span class="error-text" id="e-human">That's not the right answer &mdash; give it another go.</span>
+      <div id="captcha" data-sitekey="6LfQobgtAAAAAImxUSmt7VOD0C30VAVMD4ZIRMgs"></div>
+      <p class="hc-blocked" id="hc-blocked" hidden>
+        The check couldn't load &mdash; a privacy extension or content blocker is usually the
+        cause. Allow <code>google.com/recaptcha</code> and reload, or email us at
+        <a href="mailto:support@linkupsoftware.com">support@linkupsoftware.com</a>.
+      </p>
+      <span class="error-text" id="e-human">Please complete the check above.</span>
     </div>
 
     <div class="submit-row">
@@ -402,11 +405,8 @@
 (function () {
   'use strict';
 
-  /* The endpoint that relays this form to the support inbox.
-     Empty string = not deployed yet, in which case the form degrades to opening
-     the visitor's mail client with everything pre-filled, so the page is never
-     a dead end. Set this to the Worker URL to switch on real submission. */
-  var ENDPOINT = '';
+  /* The relay that delivers this form to the support inbox. */
+  var ENDPOINT = 'https://forms.linkupsoftware.com/support';
   var SUPPORT_EMAIL = 'support@linkupsoftware.com';
 
   var form      = document.getElementById('support-form');
@@ -417,32 +417,63 @@
   var badText   = document.getElementById('result-bad-text');
   var counter   = document.getElementById('counter');
   var message   = document.getElementById('f-message');
-  var hcQuestion= document.getElementById('hc-question');
-  var hcLabel   = document.getElementById('hc-label');
-  var hcInput   = document.getElementById('f-human');
+  var blockedMsg= document.getElementById('hc-blocked');
 
   /* When the page finished loading. A form completed in under a couple of
      seconds was not filled in by a person. */
   var loadedAt = Date.now();
 
-  /* ── Human check ───────────────────────────────────────────────────────────
-     Arithmetic rather than an image puzzle: it is readable by a screen reader,
-     needs no third-party script, and costs the visitor about a second. The
-     server re-checks it — this is a filter, not a lock. */
-  var hcA = 0, hcB = 0;
-  function newQuestion() {
-    hcA = 2 + Math.floor(Math.random() * 8);   /* 2–9 */
-    hcB = 2 + Math.floor(Math.random() * 8);   /* 2–9 */
-    hcQuestion.textContent = 'What is ' + hcA + ' + ' + hcB + '?';
-    hcLabel.textContent = 'What is ' + hcA + ' plus ' + hcB + '?';
-    hcInput.value = '';
-    setError(hcInput, 'e-human', false);
+  /* ── reCAPTCHA ─────────────────────────────────────────────────────────────
+     The token is read from the widget with `grecaptcha.getResponse`. It is
+     SINGLE USE and expires after about two minutes, so every failed submit has
+     to reset the widget — otherwise the retry posts a token Google has already
+     spent and the visitor is stuck in a loop they cannot see the cause of. */
+  var widgetId = null;
+
+  window.__mountCaptcha = function () {
+    if (widgetId !== null) return;                          /* already mounted */
+    if (!window.grecaptcha || !window.grecaptcha.render) {  /* served but inert */
+      blockedMsg.hidden = false;
+      return;
+    }
+    var box = document.getElementById('captcha');
+    try {
+      blockedMsg.hidden = true;   /* a slow load may have tripped the timeout */
+      widgetId = window.grecaptcha.render(box, {
+        sitekey: box.dataset.sitekey,
+        theme: 'dark',
+        callback: function () { setError(null, 'e-human', false); },
+        'expired-callback': function () { setError(null, 'e-human', true); },
+        'error-callback': function () { blockedMsg.hidden = false; }
+      });
+    } catch (e) {
+      /* Wrong key type (a v3 key cannot draw a checkbox) or a bad key lands
+         here. Without this the box is simply empty and nobody knows why. */
+      console.error('reCAPTCHA could not render:', e);
+      blockedMsg.hidden = false;
+    }
+  };
+  if (window.__captchaReady) window.__mountCaptcha();
+
+  function captchaToken() {
+    if (widgetId === null || !window.grecaptcha) return '';
+    try { return window.grecaptcha.getResponse(widgetId) || ''; } catch (e) { return ''; }
   }
-  document.getElementById('hc-new').addEventListener('click', function () {
-    newQuestion();
-    hcInput.focus();
-  });
-  newQuestion();
+  function resetCaptcha() {
+    if (widgetId !== null && window.grecaptcha) {
+      try { window.grecaptcha.reset(widgetId); } catch (e) {}
+    }
+  }
+
+  /* Nothing mounted after fifteen seconds means the script was blocked, or
+     loaded without initialising. Either way the visitor is stuck, so say so.
+     Generous on purpose: Google's script is heavy and a slow connection was
+     tripping a six-second timer while the widget was still on its way, which
+     put a "couldn't load" warning above a perfectly working checkbox. A late
+     mount clears the notice regardless. */
+  setTimeout(function () {
+    if (widgetId === null) blockedMsg.hidden = false;
+  }, 15000);
 
   /* ── Character counter ── */
   function updateCounter() {
@@ -455,7 +486,7 @@
 
   /* ── Validation ── */
   function setError(el, errId, on) {
-    el.setAttribute('aria-invalid', on ? 'true' : 'false');
+    if (el && el.setAttribute) el.setAttribute('aria-invalid', on ? 'true' : 'false');
     document.getElementById(errId).classList.toggle('show', on);
   }
 
@@ -481,30 +512,18 @@
     var msgOk = f.message.value.trim().length > 0;
     setError(f.message, 'e-message', !msgOk); if (!msgOk) ok = false;
 
-    var humanOk = parseInt(f.human.value, 10) === hcA + hcB;
-    setError(f.human, 'e-human', !humanOk); if (!humanOk) ok = false;
+    var humanOk = captchaToken() !== '';
+    setError(null, 'e-human', !humanOk); if (!humanOk) ok = false;
 
     return ok;
   }
 
   /* Clear a field's error as soon as the visitor starts fixing it. */
-  ['name', 'email', 'reason', 'message', 'human'].forEach(function (key) {
+  ['name', 'email', 'reason', 'message'].forEach(function (key) {
     var el = form.elements[key];
     var ev = el.tagName === 'SELECT' ? 'change' : 'input';
     el.addEventListener(ev, function () { setError(el, 'e-' + key, false); });
   });
-
-  /* ── Fallback: open the visitor's mail client, fully pre-filled ── */
-  function mailtoFallback(payload) {
-    var body =
-      'Name: '   + payload.name   + '\n' +
-      'Email: '  + payload.email  + '\n' +
-      'Reason: ' + payload.reason + '\n\n' +
-      payload.message + '\n';
-    return 'mailto:' + SUPPORT_EMAIL +
-           '?subject=' + encodeURIComponent('[' + payload.reason + '] ' + payload.name) +
-           '&body='    + encodeURIComponent(body);
-  }
 
   function showBad(html) {
     badText.innerHTML = html;
@@ -532,30 +551,14 @@
 
     var f = form.elements;
     var payload = {
-      name:    f.name.value.trim(),
-      email:   f.email.value.trim(),
-      reason:  f.reason.value,
-      message: f.message.value.trim(),
-      company: f.company.value,          /* honeypot — must arrive empty */
-      a: hcA, b: hcB,
-      human:   parseInt(f.human.value, 10),
-      elapsed: Date.now() - loadedAt     /* ms on page — too fast means a bot */
+      name:     f.name.value.trim(),
+      email:    f.email.value.trim(),
+      reason:   f.reason.value,
+      message:  f.message.value.trim(),
+      company:  f.company.value,         /* honeypot — must arrive empty */
+      token:    captchaToken(),          /* reCAPTCHA, verified server-side */
+      elapsed:  Date.now() - loadedAt    /* ms on page — too fast means a bot */
     };
-
-    /* No endpoint configured yet: hand off to the mail client instead of
-       failing. Everything the form collected travels with it. */
-    if (!ENDPOINT) {
-      window.location.href = mailtoFallback(payload);
-      setTimeout(function () {
-        okBox.querySelector('p').innerHTML =
-          'Your email app should have opened with the message ready to send &mdash; ' +
-          'press send there and it\'s on its way. If nothing opened, email us at ' +
-          '<a href="mailto:' + SUPPORT_EMAIL + '">' + SUPPORT_EMAIL + '</a>.';
-        okBox.classList.add('show');
-        okBox.scrollIntoView({ block: 'center' });
-      }, 400);
-      return;
-    }
 
     setSending(true);
 
@@ -577,14 +580,17 @@
         okBox.scrollIntoView({ block: 'center' });
       })
       .catch(function (err) {
+        /* The token is spent either way, so the widget has to be re-armed
+           before the visitor can try again. */
+        resetCaptcha();
         /* The relay answers with a sentence meant for the visitor. Anything
-           else (a dropped connection, an HTTP code) gets a generic stand-in
-           rather than being shown raw. */
+           else (a dropped connection, a bare HTTP code) gets a generic
+           stand-in rather than being shown raw. */
         var raw = String(err && err.message || '');
         var friendly = /^[A-Z].*[.!?]$/.test(raw) ? raw : 'We couldn\'t send that just now.';
         showBad(
-          friendly + ' Try again in a moment, or <a href="' + mailtoFallback(payload) + '">' +
-          'send it by email instead</a> &mdash; that link carries everything you just typed.'
+          friendly + ' Please try again in a moment. If it keeps failing, reach us at ' +
+          '<a href="mailto:' + SUPPORT_EMAIL + '">' + SUPPORT_EMAIL + '</a>.'
         );
       })
       .then(function () { setSending(false); });
@@ -596,7 +602,7 @@
     form.reset();
     form.style.display = '';
     okBox.classList.remove('show');
-    newQuestion();
+    resetCaptcha();
     updateCounter();
     loadedAt = Date.now();
     form.elements.name.focus();
@@ -604,6 +610,9 @@
   });
 })();
 </script>
+
+<script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaReady&render=explicit"
+        async defer></script>
 
 </body>
 </html>
