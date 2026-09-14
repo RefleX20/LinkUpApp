@@ -36,8 +36,8 @@
     <span class="badge">Legal</span>
     <h1>Privacy Policy</h1>
     <div class="meta">
-      <span>📅 Effective March 13, 2026</span>
-      <span>🔄 Last Updated July 25, 2026</span>
+      <span>📅 Effective August 25, 2026</span>
+      <span>🔄 Last Updated September 13, 2026</span>
     </div>
   </div>
 
@@ -51,7 +51,7 @@
 
   <h3>2.1 Information You Provide or Create</h3>
   <ul>
-    <li><strong>Account and identity information</strong> — The name, username, email address, and/or phone number you register with; your password, which we store only as a cryptographic hash and never in readable form; your date of birth, which we use to apply the minimum age requirement and to determine whether you are old enough to be shown personalized advertising; and a record of the versions of these policies you have agreed to and when.</li>
+    <li><strong>Account and identity information</strong> — The name, username, email address, and/or phone number you register with; your password, which we store only as a cryptographic hash and never in readable form; your date of birth, which we use to apply the minimum age requirement and to determine which advertising settings are available to you; and a record of the versions of these policies you have agreed to and when.</li>
     <li><strong>Content you create and share</strong> — Groups you create or join and their names, descriptions and join codes; events, including their titles, dates, details and locations; group chat messages; direct messages; polls, reactions, replies and event tags; your RSVP responses; and event invitations, pings and reminders.</li>
     <li><strong>Reports, feedback and support requests</strong> — Reports you submit about another user or a piece of content, including anything you write and a copy of the content being reported; and any feedback or support request you send us, including diagnostic logs if you choose to attach them.</li>
     <li><strong>Settings and preferences</strong> — Your notification preferences, per-group mute settings, privacy toggles and advertising choices. These are held on our servers rather than only on your device, because they have to be applied before anything is sent to you.</li>
@@ -105,7 +105,12 @@
 
   <h2>4. How We Store Your Information</h2>
   <h3>4.1 Server Storage</h3>
-  <p>Your account data, group data, event data, chat messages, direct messages, and your settings and preferences are stored on our servers hosted via Render. Event location data is stored in <strong>encrypted form</strong> using <code>pgp_sym_encrypt</code> (pgcrypto) and is decrypted only when delivered to authorized group members.</p>
+  <p>Your account data, group data, event data, chat messages, direct messages, and your settings and preferences are stored on servers operated for us by a third-party cloud hosting provider.</p>
+  <p>Event locations are stored in <strong>encrypted form</strong>. They are decrypted to show the event to members of the group it belongs to, and may also be decrypted by authorized LinkUp personnel where necessary to review reported content, investigate a safety concern, or respond to a legal request. See <strong>4.3 Access by LinkUp personnel</strong> below.</p>
+
+  <h3>4.3 Access by LinkUp personnel</h3>
+  <p>LinkUp is operated by a small team. Authorized personnel may access your information, including the content of group chats, direct messages, event details and event locations, where it is necessary to investigate a report of objectionable content or abusive behavior, respond to a safety concern, provide support you have asked for, comply with a legal obligation or a valid legal request, or diagnose a fault you have reported.</p>
+  <p>This access is limited to what the specific purpose requires, and each access is recorded in an internal log. We do not read your messages for advertising or for product analytics.</p>
 
   <h3>4.2 On-Device Storage</h3>
   <ul>
@@ -144,7 +149,10 @@
     <li><strong>After 30 days.</strong> Your account and associated personal data are permanently deleted from our servers and cannot be recovered.</li>
     <li>Backups may retain data for a limited period after deletion.</li>
   </ul>
-  <p><strong>Three things survive account deletion.</strong> If another user reported your content, the report — including the copy of the reported content saved with it — is kept for the report retention period shown above; your account identifiers are removed from it when your account is deleted. Records of an in-app purchase are kept with your account identifier removed, so that purchase and refund records remain complete. Error and diagnostic records are likewise stripped of your identifier rather than deleted, and age out on the schedule above.</p>
+  <p><strong>Some records outlive your account.</strong> When your account is deleted, most of your data goes with it. A few categories are kept, and they fall into three groups.</p>
+  <p><strong>Kept without your identifier.</strong> If another user reported your content, the report — including the copy of the reported content saved with it — is kept for the report retention period shown above, with your account identifiers removed. Records of an in-app purchase are kept with your account identifier removed, so that purchase and refund records remain complete, and are permanently deleted 7 years after the purchase. Error and diagnostic records are stripped of your identifier rather than deleted, and age out on the schedule above.</p>
+  <p><strong>Kept with your identifier.</strong> Security and administrative records — sign-in security events, records of moderation actions taken on the account, and records of administrative messages sent to it — are retained for the period shown above and are <strong>not</strong> de-identified. These records exist so that we can investigate abuse, respond to a later dispute or legal request, and show what happened to an account. They include the account identifier, and may include the IP address and device information recorded at the time.</p>
+    <p><strong>Kept as a hashed record.</strong> If your account is banned or suspended, we retain a one-way, non-reversible hashed form of your email address, phone number, and device identifier for 5 years from the date of the ban, after which it is deleted. This hashed record cannot be used to recover your email address, phone number, or device identifier, and is used for exactly one purpose: recognizing an attempt to create a new account after a ban. We do not use it to contact you, to profile you, or to identify you for any other purpose.</p>
 
   <h2>5. How We Share Your Information</h2>
   <p>We do not sell your personal information. We share information only in the following circumstances:</p>
@@ -163,7 +171,8 @@
     <li><strong>Google AdMob</strong> — Advertising (only if ads are enabled)</li>
     <li><strong>Apple APNs</strong> — Push notification delivery</li>
     <li><strong>Apple Maps / geocoding</strong> — Converting between coordinates and addresses when you choose or view an event location</li>
-    <li><strong>Render</strong> — Secure server infrastructure</li>
+    <li><strong>Cloud hosting provider</strong> — Operates the servers that store and serve your data</li>
+    <li><strong>Google reCAPTCHA</strong> — Used on our support website to detect and prevent automated abuse</li>
   </ul>
 
   <h3>5.3 For Legal Reasons</h3>
@@ -173,7 +182,8 @@
   <p>If LinkUp is involved in a merger, acquisition, or sale of assets, your information may be transferred as part of that transaction. We will notify you via email or a prominent in-app notice before your information becomes subject to a different privacy policy.</p>
 
   <h2>6. Apple App Tracking Transparency (ATT)</h2>
-  <p>In accordance with Apple's App Tracking Transparency framework, we will ask for your permission before tracking your activity across other companies' apps and websites for advertising purposes. If you decline, you will still see ads, but they will not be personalized based on cross-app tracking. You can change your tracking preference at any time in <strong>iOS Settings → Privacy &amp; Security → Tracking</strong>.</p>
+  <p><strong>LinkUp does not track you.</strong> We do not follow your activity across other companies' apps or websites, we do not use the advertising identifier on your device, and we do not share your personal information with advertisers for targeted advertising. Because we do not track, the App does not show an App Tracking Transparency prompt, and our app privacy information on the App Store declares that no data is used to track you.</p>
+  <p>Advertisements shown in the App are <strong>not personalized</strong> to you.</p>
 
   <h2>7. Your Privacy Choices and Rights</h2>
   <h3>7.1 Notification Preferences</h3>
@@ -183,7 +193,7 @@
   <p>Mute event or chat notifications for individual groups through <strong>Group Settings → Notifications</strong>. Muted preferences are stored on our server and prevent push notifications from being sent for that group.</p>
 
   <h3>7.3 Ad Tracking</h3>
-  <p>You can opt out of personalized advertising by selecting "Ask App Not to Track" at the ATT prompt, disabling tracking in <strong>iOS Settings → Privacy &amp; Security → Tracking</strong>, or purchasing the <strong>Remove Ads</strong> in-app purchase.</p>
+  <p>Advertisements in the App are not personalized, so there is nothing to opt out of — see Section 6. You can remove advertising entirely by purchasing the <strong>Remove Ads</strong> in-app purchase.</p>
 
   <h3>7.4 Calendar Access</h3>
   <p>Revoke calendar access at any time in <strong>iOS Settings → Privacy &amp; Security → Calendars → LinkUp</strong>. All other App features remain functional.</p>
@@ -192,7 +202,7 @@
   <p>Revoke location access at any time in <strong>iOS Settings → Privacy &amp; Security → Location Services → LinkUp</strong>. In the same place you can turn off <strong>Precise Location</strong>, which leaves the App with only an approximate position. Location is used when you are choosing a location for an event and when you open an event's detail screen, where it is used to show how far away the event is. It is not collected while the App is closed or in the background. A location you choose for an event becomes part of that event and is visible to the members of the group it belongs to.</p>
 
   <h3>7.6 Account Deletion</h3>
-  <p>Delete your account at any time from <strong>Profile → Help &amp; Support → Delete Account</strong>. Your account is closed immediately and you are signed out.</p>
+  <p>Delete your account at any time from <strong>Profile → Delete Account</strong> (also available from Help &amp; Support). Your account is closed immediately and you are signed out.</p>
   <p><strong>30-day recovery window.</strong> For 30 days after you delete your account, we keep it in a closed state so the deletion can be reversed if you change your mind or deleted it by mistake. To request restoration, email us at <a href="mailto:hello.linkupapp@gmail.com">hello.linkupapp@gmail.com</a> from the address on the account. After 30 days the account and its data are permanently deleted and cannot be recovered.</p>
   <p>Two things to know about restoration:</p>
   <ul>
@@ -214,14 +224,13 @@
   <h2>9. Security</h2>
   <p>We implement reasonable technical and organizational measures to protect your information, including:</p>
   <ul>
-    <li><strong>Keychain storage</strong> for authentication tokens on-device</li>
-    <li><strong>Encrypted storage</strong> for event location data on our servers (pgcrypto)</li>
-    <li><strong>HTTPS/TLS</strong> for all data in transit</li>
-    <li><strong>JWT authentication</strong> with 7-day expiry for API access</li>
-    <li><strong>Rate limiting</strong> on all API endpoints to prevent abuse</li>
-    <li><strong>Bcrypt password hashing</strong> (14 rounds)</li>
+    <li>Encryption of information in transit between the App and our servers</li>
+    <li>Encryption of particularly sensitive information, including event locations, while stored</li>
+    <li>Storage of your password only in a form that cannot be read back</li>
+    <li>Access controls limiting who can reach your data, with access recorded</li>
+    <li>Measures designed to detect and limit abuse of our systems</li>
   </ul>
-  <p>No method of transmission over the internet or electronic storage is 100% secure.</p>
+  <p>No method of transmission over the internet or electronic storage is completely secure, and we cannot guarantee absolute security. You are responsible for keeping your password confidential and for activity on your account.</p>
 
   <h2>10. Third-Party Links and Services</h2>
   <p>The App may contain links to third-party websites or services (e.g., Waze for directions). We are not responsible for the privacy practices of those third parties.</p>
@@ -230,7 +239,8 @@
   <p>Your information may be stored and processed in the United States or any country where our service providers operate. By using the App, you consent to such transfers. For EEA/UK users, we ensure appropriate safeguards are in place in accordance with applicable data protection law.</p>
 
   <h2>12. Changes to This Privacy Policy</h2>
-  <p>We reserve the right to update this Privacy Policy at any time without prior notice. When we make material changes, we will update the "Last Updated" date at the top. Your continued use of the App after changes constitutes acceptance.</p>
+  <p>We may update this Privacy Policy from time to time. When we do, we will change the <strong>Last updated</strong> date at the top and bottom of this page, so you can always tell when it last changed.</p>
+  <p>If we make a material change — for example collecting a new category of information, using your information for a materially different purpose, or sharing it with a new category of recipient — we will take reasonable steps to bring it to your attention, and where the law requires it we will ask for your consent. Your continued use of the App after a change takes effect means you accept the updated Policy.</p>
 
   <h2>13. Contact Us</h2>
   <p>If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:</p>
@@ -240,7 +250,7 @@
 
   <div class="doc-footer">
     <img src="logo.png" alt="LinkUp" />
-    <p>Last updated March 13, 2026</p>
+    <p>Last updated September 13, 2026</p>
   </div>
 </div>
 
