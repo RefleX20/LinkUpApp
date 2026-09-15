@@ -121,7 +121,7 @@
   </ul>
 
   <h3>4.4 Home Screen Widget and Shared Storage</h3>
-  <p>If you add the LinkUp widget to your Home Screen, the App keeps a small copy of some of your information in a shared storage area on your device so the widget has something to show and can act on a tap. A widget cannot fetch data from our servers itself, so the App writes this copy while you are using it.</p>
+  <p>If you add the LinkUp widget to your Home Screen, the App keeps a small copy of some of your information in a shared storage area on your device so the widget has something to show and can act on a tap. The widget does not contact our servers itself &mdash; the App writes this copy while you are using it, and the widget reads it.</p>
   <ul>
     <li><strong>A copy of your authentication token</strong> — so that tapping an RSVP button in the widget can act on your behalf. It is written with the strongest file protection iOS offers, cannot be read while your device is locked, is excluded from device backups, and is deleted when you sign out.</li>
     <li><strong>A summary of your upcoming events</strong> — titles, dates, the group each belongs to, your RSVP status, and, where you typed one, the event&rsquo;s location as readable text. If an event&rsquo;s location was dropped as a map pin rather than typed, no location text is written. This summary is encrypted by iOS and excluded from device backups, but it is readable once your device has been unlocked after restarting, because the widget has to be able to draw itself. It is not encrypted in the way event locations are encrypted on our servers, described in 4.1, and it is cleared when you sign out.</li>
