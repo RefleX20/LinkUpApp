@@ -37,7 +37,7 @@
     <h1>Privacy Policy</h1>
     <div class="meta">
       <span>📅 Effective August 25, 2026</span>
-      <span>🔄 Last Updated September 13, 2026</span>
+      <span>🔄 Last Updated September 14, 2026</span>
     </div>
   </div>
 
@@ -63,7 +63,7 @@
     <li><strong>Connection information</strong> — IP address, connection timestamps, and WebSocket connection metadata.</li>
     <li><strong>In-app activity needed to operate features</strong> — Which chat messages and events you have already seen, so unread counts and "new" badges are accurate, and when your device was last active.</li>
     <li><strong>Safety and enforcement records</strong> — Sign-in attempts (the identifier used and the originating IP address), IP addresses seen on your account, warnings and posting restrictions issued to you, blocks you place on other users, and the outcome of reports involving you. Message content is also screened automatically for slurs, hate speech and threats; see Section 3.</li>
-    <li><strong>Error and diagnostic data</strong> — Technical information about App and server errors and crashes, so we can diagnose and fix faults.</li>
+    <li><strong>Error, diagnostic and performance data</strong> — Technical information about App and server errors, crashes, freezes and performance, so we can diagnose and fix faults and keep the App responsive. Performance measurements cover things like how long the App takes to launch, how much memory it uses, and how much data it writes to your device.</li>
     <li><strong>Purchase and advertising records</strong> — The Apple transaction identifier for a Remove Ads purchase (we never receive your payment details) and a record of which ads were shown to you.</li>
   </ul>
 
@@ -76,15 +76,14 @@
     <tbody>
       <tr><td><strong>Camera</strong></td><td>Camera viewfinder only</td><td>Scan circular group join codes. No images are captured, stored, or transmitted.</td></tr>
       <tr><td><strong>Location (When In Use)</strong></td><td>Precise location, only while the App is open</td><td>Center the map on where you are when you are choosing a location for an event, and show how far away an event is on its detail screen. A location you choose becomes part of that event and is shared with the group you create it in. Coordinates and addresses are sent to Apple&rsquo;s mapping and geocoding services to convert between the two. Not collected in the background, never sent to our advertising partner, and never sold. You can limit the App to an approximate position by turning off <strong>Precise Location</strong> in iOS Settings &rarr; Privacy &amp; Security &rarr; Location Services &rarr; LinkUp.</td></tr>
-      <tr><td><strong>Calendar (Full Access)</strong></td><td>Your calendar events, and the ability to add an event to your calendar</td><td>Display your personal events alongside group events in the Calendar tab, warn you when an event you are responding to clashes with something already in your calendar, and save an event to your calendar when you choose Add to Calendar. Full access is requested because saving an event requires write access while clash and duplicate checking require read access. Your calendar data is never sent to our servers.</td></tr>
+      <tr><td><strong>Calendar (Full Access)</strong></td><td>Your calendar events, and the ability to add an event to your calendar</td><td>Display your personal events alongside group events in the Calendar tab, and save an event to your calendar when you choose Add to Calendar. Full access is requested because saving an event requires write access, while showing your events and checking whether an event is already in your calendar &mdash; so that Add to Calendar does not create a duplicate &mdash; require read access. Your calendar data is never sent to our servers.</td></tr>
       <tr><td><strong>Notifications</strong></td><td>Push notification delivery</td><td>Send you alerts about group chat and direct messages, new, changed and cancelled events, RSVPs, join requests and approvals, and reminders.</td></tr>
     </tbody>
   </table>
 
   <h3>2.4 Information from Third-Party Advertising</h3>
-  <p>If you have not purchased the Remove Ads option, our advertising partner Google AdMob may collect:</p>
+  <p>If you have not purchased the Remove Ads option, our advertising partner Google AdMob may collect the following. We do not enable personalized advertising and we do not use the advertising identifier on your device, so no App Tracking Transparency prompt is shown &mdash; see Section 6.</p>
   <ul>
-    <li>Advertising identifiers (IDFA, if you grant tracking permission via Apple's App Tracking Transparency prompt)</li>
     <li>Approximate location (country/region level)</li>
     <li>Device and app information used to serve relevant ads</li>
   </ul>
@@ -98,6 +97,8 @@
     <li><strong>Process purchases</strong> — Verify your in-app purchase of Remove Ads via Apple's StoreKit</li>
     <li><strong>Improve the App</strong> — Analyze error and crash reports, and the feedback you send us, to find and fix faults and improve features</li>
     <li><strong>Enforce our Terms of Service</strong> — Detect and prevent abuse, fraud, and violations. This includes screening group chat messages, direct messages, and the names and descriptions you give to groups, events and your profile automatically for slurs, hate speech and threats before they are posted, and reviewing reports submitted by other users. See Section 5.4 of the <a href="tos.html">Terms of Service</a>.</li>
+    <li><strong>Confirm your age</strong> — Use the date of birth you give at signup to enforce our minimum age requirement and to determine which advertising settings are available to you</li>
+    <li><strong>Prevent ban evasion</strong> — Record an identifier for your device at signup so that an account we have banned or suspended cannot immediately sign up again on the same device</li>
     <li><strong>Comply with legal obligations</strong> — Respond to lawful requests from authorities where required</li>
     <li><strong>Serve advertising</strong> — If you have not removed ads, display relevant advertisements via Google AdMob</li>
   </ul>
@@ -106,20 +107,28 @@
   <h2>4. How We Store Your Information</h2>
   <h3>4.1 Server Storage</h3>
   <p>Your account data, group data, event data, chat messages, direct messages, and your settings and preferences are stored on servers operated for us by a third-party cloud hosting provider.</p>
-  <p>Event locations are stored in <strong>encrypted form</strong>. They are decrypted to show the event to members of the group it belongs to, and may also be decrypted by authorized LinkUp personnel where necessary to review reported content, investigate a safety concern, or respond to a legal request. See <strong>4.3 Access by LinkUp personnel</strong> below.</p>
+  <p>Event locations are stored in <strong>encrypted form</strong>. They are decrypted to show the event to members of the group it belongs to, and may also be decrypted by authorized LinkUp personnel where necessary to review reported content, investigate a safety concern, or respond to a legal request. See <strong>4.2 Access by LinkUp personnel</strong> below.</p>
 
-  <h3>4.3 Access by LinkUp personnel</h3>
+  <h3>4.2 Access by LinkUp personnel</h3>
   <p>LinkUp is operated by a small team. Authorized personnel may access your information, including the content of group chats, direct messages, event details and event locations, where it is necessary to investigate a report of objectionable content or abusive behavior, respond to a safety concern, provide support you have asked for, comply with a legal obligation or a valid legal request, or diagnose a fault you have reported.</p>
   <p>This access is limited to what the specific purpose requires, and each access is recorded in an internal log. We do not read your messages for advertising or for product analytics.</p>
 
-  <h3>4.2 On-Device Storage</h3>
+  <h3>4.3 On-Device Storage</h3>
   <ul>
-    <li><strong>JWT authentication token</strong> — Stored securely in the iOS Keychain (encrypted by the OS). Expires after 7 days.</li>
+    <li><strong>Authentication token</strong> — Stored in the iOS Keychain, encrypted by the OS and readable only while your device is unlocked. Expires after 7 days. A second copy is kept in the App’s shared storage so the Home Screen widget can respond to an RSVP — see <strong>4.4</strong> below.</li>
     <li><strong>Cached groups, events, and profile data</strong> — Stored in Core Data for offline browsing. Cleared when you log out.</li>
     <li><strong>Calendar events</strong> — Never stored by us; read locally from iOS Calendar only</li>
   </ul>
 
-  <h3>4.3 Retention</h3>
+  <h3>4.4 Home Screen Widget and Shared Storage</h3>
+  <p>If you add the LinkUp widget to your Home Screen, the App keeps a small copy of some of your information in a shared storage area on your device so the widget has something to show and can act on a tap. A widget cannot fetch data from our servers itself, so the App writes this copy while you are using it.</p>
+  <ul>
+    <li><strong>A copy of your authentication token</strong> — so that tapping an RSVP button in the widget can act on your behalf. It is written with the strongest file protection iOS offers, cannot be read while your device is locked, is excluded from device backups, and is deleted when you sign out.</li>
+    <li><strong>A summary of your upcoming events</strong> — titles, dates, the group each belongs to, your RSVP status, and, where you typed one, the event&rsquo;s location as readable text. If an event&rsquo;s location was dropped as a map pin rather than typed, no location text is written. This summary is encrypted by iOS and excluded from device backups, but it is readable once your device has been unlocked after restarting, because the widget has to be able to draw itself. It is not encrypted in the way event locations are encrypted on our servers, described in 4.1, and it is cleared when you sign out.</li>
+  </ul>
+  <p>This shared area is private to LinkUp on your device. Nothing in it is sent anywhere, and no part of it is shared with our advertising partner or any other third party.</p>
+
+  <h3>4.5 Retention</h3>
   <p>We keep your account for as long as it is open. Several categories of content and records are deleted automatically on a fixed schedule, whether or not your account is active:</p>
   <table>
     <thead>
@@ -151,7 +160,8 @@
   </ul>
   <p><strong>Some records outlive your account.</strong> When your account is deleted, most of your data goes with it. A few categories are kept, and they fall into three groups.</p>
   <p><strong>Kept without your identifier.</strong> If another user reported your content, the report — including the copy of the reported content saved with it — is kept for the report retention period shown above, with your account identifiers removed. Records of an in-app purchase are kept with your account identifier removed, so that purchase and refund records remain complete, and are permanently deleted 7 years after the purchase. Error and diagnostic records are stripped of your identifier rather than deleted, and age out on the schedule above.</p>
-  <p><strong>Kept with your identifier.</strong> Security and administrative records — sign-in security events, records of moderation actions taken on the account, and records of administrative messages sent to it — are retained for the period shown above and are <strong>not</strong> de-identified. These records exist so that we can investigate abuse, respond to a later dispute or legal request, and show what happened to an account. They include the account identifier, and may include the IP address and device information recorded at the time.</p>
+  <p><strong>Kept in de-identified form.</strong> Security and administrative records — sign-in security events, records of moderation actions taken on the account, and records of administrative messages sent to it — are retained for the period shown above, with your account identifier replaced by a surrogate reference. The surrogate keeps that account&rsquo;s own records grouped together, so we can still see a sequence of events as one story, but it does not link back to you, to your email address, or to any other record. Your email address is removed, and any IP address recorded at the time is reduced to the surrounding network rather than the exact address. These records exist so that we can investigate abuse, respond to a later dispute or legal request, and show what happened to an account.</p>
+  <p>Records of what <em>our own staff</em> did — for example that an administrator issued a ban, and the reason given — are records of our actions rather than yours, and are kept as part of our operating history.</p>
     <p><strong>Kept as a hashed record.</strong> If your account is banned or suspended, we retain a one-way, non-reversible hashed form of your email address, phone number, and device identifier for 5 years from the date of the ban, after which it is deleted. This hashed record cannot be used to recover your email address, phone number, or device identifier, and is used for exactly one purpose: recognizing an attempt to create a new account after a ban. We do not use it to contact you, to profile you, or to identify you for any other purpose.</p>
 
   <h2>5. How We Share Your Information</h2>
@@ -160,7 +170,7 @@
   <h3>5.1 With Other Users</h3>
   <ul>
     <li><strong>Profile</strong> — Your name and username are visible to members of groups you belong to</li>
-    <li><strong>Email / Phone</strong> — Visible to group members only if you have enabled this in Privacy Settings</li>
+    <li><strong>Email address and phone number</strong> — Never shared with other users. They are not visible to group members and are not returned to the App when it lists a group&rsquo;s members.</li>
     <li><strong>Events</strong> — Event details, including location and RSVP responses, are visible to all members of the group the event belongs to</li>
     <li><strong>Chat messages</strong> — Visible to all members of the group chat</li>
     <li><strong>Direct messages</strong> — Visible only to the one other person in the conversation. If you block someone, your messages stop being delivered to them and theirs are hidden from you.</li>
@@ -172,6 +182,7 @@
     <li><strong>Apple APNs</strong> — Push notification delivery</li>
     <li><strong>Apple Maps / geocoding</strong> — Converting between coordinates and addresses when you choose or view an event location</li>
     <li><strong>Cloud hosting provider</strong> — Operates the servers that store and serve your data</li>
+    <li><strong>Email delivery providers</strong> — Resend, with Google&rsquo;s Gmail service as a fallback if a message cannot be sent, used to deliver account verification and password reset codes. Your email address is disclosed to the provider that delivers the message.</li>
     <li><strong>Google reCAPTCHA</strong> — Used on our support website to detect and prevent automated abuse</li>
   </ul>
 
@@ -190,7 +201,7 @@
   <p>Manage push notification settings within the App under <strong>Profile → Notifications</strong>, or through <strong>iOS Settings → Notifications → LinkUp</strong>.</p>
 
   <h3>7.2 Per-Group Notification Preferences</h3>
-  <p>Mute event or chat notifications for individual groups through <strong>Group Settings → Notifications</strong>. Muted preferences are stored on our server and prevent push notifications from being sent for that group.</p>
+  <p>Mute event or chat notifications for individual groups by opening the group, tapping the gear icon, then <strong>Notifications</strong>, where event notifications and chat notifications can be turned off separately. These preferences are stored on our server and prevent push notifications from being sent for that group.</p>
 
   <h3>7.3 Ad Tracking</h3>
   <p>Advertisements in the App are not personalized, so there is nothing to opt out of — see Section 6. You can remove advertising entirely by purchasing the <strong>Remove Ads</strong> in-app purchase.</p>
@@ -213,7 +224,7 @@
   <h3>7.7 Rights for EEA / UK Users (GDPR)</h3>
   <p>If you are located in the European Economic Area or United Kingdom, you have the following rights under GDPR: right of access, right to rectification, right to erasure, right to restriction, right to data portability, right to object, and right to withdraw consent.</p>
   <p>To exercise any of these rights, contact us at <a href="mailto:hello.linkupapp@gmail.com">hello.linkupapp@gmail.com</a>. We will respond within 30 days.</p>
-  <p>Our legal bases for processing: <strong>Contract</strong> (providing the App's services), <strong>Legitimate Interests</strong> (security, fraud prevention, service improvement), and <strong>Consent</strong> (push notifications, ad tracking where applicable).</p>
+  <p>Our legal bases for processing: <strong>Contract</strong> (providing the App's services), <strong>Legitimate Interests</strong> (security, fraud prevention, service improvement), and <strong>Consent</strong> (push notifications, and — in the European Economic Area and the United Kingdom — the choices you make in the advertising consent form the App presents to you).</p>
 
   <h3>7.8 Rights for California Users (CCPA / CPRA)</h3>
   <p>California residents have the right to know, delete, correct, and opt out of the sale or sharing of personal information. We do not sell personal information. We will not discriminate against you for exercising your privacy rights. Contact us at <a href="mailto:hello.linkupapp@gmail.com">hello.linkupapp@gmail.com</a>.</p>
@@ -250,7 +261,7 @@
 
   <div class="doc-footer">
     <img src="logo.png" alt="LinkUp" />
-    <p>Last updated September 13, 2026</p>
+    <p>Last updated September 14, 2026</p>
   </div>
 </div>
 
